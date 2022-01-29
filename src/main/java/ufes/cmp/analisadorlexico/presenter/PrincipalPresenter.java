@@ -44,8 +44,6 @@ public class PrincipalPresenter {
         view.getCkbExecucaoTempoReal().addActionListener((ActionEvent ae) -> {
             compilarEmTempoReal();
         });
-        
-        
 
     }
 
@@ -60,12 +58,12 @@ public class PrincipalPresenter {
             System.out.println("Desativado");
         }
     }
-    
-    private String preProcessamento(String codigo){
+
+    private String preProcessamento(String codigo) {
+
         codigo = codigo.replaceAll("\\(\\*([\\s\\S]*)\\*\\)", "");
         codigo = codigo.replaceAll("", "");
-        
-        
+
         return codigo;
     }
 

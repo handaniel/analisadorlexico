@@ -12,10 +12,10 @@ public class HandlerREAL extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if (token.getSimbolo().equals("real")) {
+        if (token.getSimbolo().toLowerCase().equals("real")) {
             token.setCategoria("Especificador_REAL");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerSTRING(token));
         }
     }
 

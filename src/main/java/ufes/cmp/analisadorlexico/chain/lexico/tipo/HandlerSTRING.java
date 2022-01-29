@@ -12,7 +12,7 @@ public class HandlerSTRING extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if (token.getSimbolo().equals("string")) {
+        if (token.getSimbolo().toLowerCase().equals("string")) {
             token.setCategoria("Especificador_STRING");
         } else {
             this.setProximo(next);

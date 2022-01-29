@@ -12,10 +12,10 @@ public class HandlerINTEGER extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if (token.getSimbolo().equals("integer")) {
+        if (token.getSimbolo().toLowerCase().equals("integer")) {
             token.setCategoria("Especificador_INTEGER");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerREAL(token));
         }
     }
 
