@@ -1,6 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.comparadores;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.digitos.HandlerDigito;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
