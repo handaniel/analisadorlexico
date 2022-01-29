@@ -15,7 +15,7 @@ public class HandlerINTEGER extends AbstractHandler {
         if (token.getSimbolo().equals("integer")) {
             token.setCategoria("Especificador_INTEGER");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerREAL(token));
         }
     }
 

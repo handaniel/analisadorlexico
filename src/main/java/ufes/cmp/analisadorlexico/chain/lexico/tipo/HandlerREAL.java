@@ -15,7 +15,7 @@ public class HandlerREAL extends AbstractHandler {
         if (token.getSimbolo().equals("real")) {
             token.setCategoria("Especificador_REAL");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerSTRING(token));
         }
     }
 
