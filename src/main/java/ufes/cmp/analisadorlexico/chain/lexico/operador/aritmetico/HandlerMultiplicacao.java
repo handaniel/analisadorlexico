@@ -1,5 +1,5 @@
 
-package ufes.cmp.analisadorlexico.operador.aritmetico;
+package ufes.cmp.analisadorlexico.chain.lexico.operador.aritmetico;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
