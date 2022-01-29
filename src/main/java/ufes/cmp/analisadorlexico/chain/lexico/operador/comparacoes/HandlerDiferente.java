@@ -14,7 +14,7 @@ public class HandlerDiferente extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("<>") == 0){
             token.setCategoria("operador_comparacao_diferente");
         } else {
-            this.setProximo(new HandlerIgual(token));
+            this.setProximo(next);
         }
     }
 

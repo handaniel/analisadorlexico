@@ -14,7 +14,7 @@ public class HandlerMaiorIgual extends AbstractHandler{
        if (token.getSimbolo().toString().toLowerCase().compareTo(">=") == 0){
             token.setCategoria("operador_comparacao_maior_igual");
         } else {
-            this.setProximo(new HandlerMenor(token));
+            this.setProximo(next);
         }
     }
 

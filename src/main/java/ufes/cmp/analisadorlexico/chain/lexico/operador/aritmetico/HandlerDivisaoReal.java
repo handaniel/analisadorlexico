@@ -15,7 +15,7 @@ public class HandlerDivisaoReal extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("/") == 0){
             token.setCategoria("operador_aritmetico_divisao_Real");
         } else {
-            this.setProximo(new HandlerDivisaoRest(token));
+            this.setProximo(next);
         }
     }
 

@@ -13,7 +13,7 @@ public class HandlerDivisaoRest extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("mod") == 0){
             token.setCategoria("operador_aritmetico_divisao_resto");
         } else {
-            this.setProximo(new HandlerMultiplicacao(token));
+            this.setProximo(next);
         }
     }
 

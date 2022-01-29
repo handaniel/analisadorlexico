@@ -14,7 +14,7 @@ public class HandlerNOT extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("not") == 0){
             token.setCategoria("operador_logico_NOT");
         } else {
-            this.setProximo(new HandlerOR(token));
+            this.setProximo(next);
         }
     }
 
