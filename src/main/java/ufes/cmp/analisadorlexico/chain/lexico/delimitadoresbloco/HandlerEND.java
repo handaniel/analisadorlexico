@@ -1,6 +1,7 @@
-package ufes.cmp.analisadorlexico.chain.lexico.bloco;
+package ufes.cmp.analisadorlexico.chain.lexico.delimitadoresbloco;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.delimitadoresinstrucoes.HandlerPontoEVirgula;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -15,7 +16,7 @@ public class HandlerEND extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("end")) {
             token.setCategoria("Delimitador_bloco_END");
         } else {
-
+            this.setProximo(new HandlerPontoEVirgula(token));
         }
     }
 
