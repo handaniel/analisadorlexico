@@ -12,7 +12,7 @@ public class HandlerCONST extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if (token.getSimbolo().equals("const")) {
+        if (token.getSimbolo().toLowerCase().equals("const")) {
             token.setCategoria("Especificador_CONST");
         } else {
             this.setProximo(new HandlerVAR(token));

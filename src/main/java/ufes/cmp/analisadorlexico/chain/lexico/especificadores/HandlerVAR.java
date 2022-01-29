@@ -13,7 +13,7 @@ public class HandlerVAR extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if (token.getSimbolo().equals("var")) {
+        if (token.getSimbolo().toLowerCase().equals("var")) {
             token.setCategoria("Especificador_VAR");
         } else {
             this.setProximo(new HandlerCHAR(token));
