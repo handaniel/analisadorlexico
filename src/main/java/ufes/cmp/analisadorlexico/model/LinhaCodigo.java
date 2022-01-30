@@ -26,14 +26,4 @@ public class LinhaCodigo {
         this.posicao = posicao;
     }
 
-    public LinhaCodigo removerComentario1() {
-        int posicaoBarras = conteudo.indexOf("//");
-
-        if (posicaoBarras >= 0) {
-            conteudo = conteudo.substring(0, posicaoBarras);
-        }
-
-        return this;
-    }
-
 }
