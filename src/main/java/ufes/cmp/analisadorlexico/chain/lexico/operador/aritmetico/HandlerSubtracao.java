@@ -1,5 +1,5 @@
 
-package ufes.cmp.analisadorlexico.operador.aritmetico;
+package ufes.cmp.analisadorlexico.chain.lexico.operador.aritmetico;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
@@ -15,7 +15,9 @@ public class HandlerSubtracao extends AbstractHandler{
     public void executar(Token token) {
         if (token.getSimbolo().toString().toLowerCase().compareTo("-") == 0){
             token.setCategoria("operador_aritmetico_subtracao");
-        }
+        }else{
+            this.setProximo(next);
+             }
     }
 
     @Override

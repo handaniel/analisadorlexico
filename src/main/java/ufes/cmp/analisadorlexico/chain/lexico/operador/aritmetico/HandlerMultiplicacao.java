@@ -1,5 +1,5 @@
 
-package ufes.cmp.analisadorlexico.operador.aritmetico;
+package ufes.cmp.analisadorlexico.chain.lexico.operador.aritmetico;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
@@ -16,7 +16,7 @@ public class HandlerMultiplicacao extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("*") == 0){
             token.setCategoria("operador_aritmetico_multiplicacao");
         } else {
-            this.setProximo(new HandlerSoma(token));
+            this.setProximo(next);
         }
     }
 
