@@ -43,6 +43,7 @@ public class PrincipalView extends javax.swing.JFrame {
         lblSaidas = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Analisador Léxico");
         setResizable(false);
 
         txtCodigo.setColumns(20);
