@@ -15,7 +15,7 @@ public class HandlerCONTINUE extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("continue")) {
             token.setCategoria("Instrucao_CONTINUE");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerELSE(token));
         }
     }
 

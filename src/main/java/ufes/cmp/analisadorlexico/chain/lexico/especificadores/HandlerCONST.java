@@ -15,7 +15,7 @@ public class HandlerCONST extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("const")) {
             token.setCategoria("Especificador_CONST");
         } else {
-            this.setProximo(new HandlerVAR(token));
+            this.setProximo(new HandlerPROGRAM(token));
         }
     }
 

@@ -15,7 +15,7 @@ public class HandlerIF extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("if")) {
             token.setCategoria("Instrucao_IF");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerProcedure(token));
         }
     }
 

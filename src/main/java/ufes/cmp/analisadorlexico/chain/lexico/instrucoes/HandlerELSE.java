@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerIELSE extends AbstractHandler {
+public class HandlerELSE extends AbstractHandler {
 
-    public HandlerIELSE(Token token) {
+    public HandlerELSE(Token token) {
         super(token);
     }
 
@@ -15,7 +15,7 @@ public class HandlerIELSE extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("else")) {
             token.setCategoria("Instrucao_ELSE");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerFunction(token));
         }
     }
 

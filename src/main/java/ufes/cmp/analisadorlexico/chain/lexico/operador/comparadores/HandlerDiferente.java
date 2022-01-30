@@ -1,4 +1,4 @@
-package ufes.cmp.analisadorlexico.chain.lexico.comparadores;
+package ufes.cmp.analisadorlexico.chain.lexico.operador.comparadores;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
