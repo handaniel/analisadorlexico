@@ -75,6 +75,16 @@ public class PrincipalPresenter {
         codigo = codigo.replaceAll("\\(\\*([\\s\\S]*)\\*\\)", "");
         codigo = codigo.replaceAll("\\{([\\s\\S]*)\\}", "");
 
+        //Separacao dos tokens
+        codigo = codigo.replaceAll(";", " ; ");
+        codigo = codigo.replaceAll("\\=", " \\= ");
+        codigo = codigo.replaceAll("\\:\\=", " \\:\\= ");
+
+        //Remove tabulações, espaçoes desnecessários
+        codigo = codigo.replaceAll("\t", " ");
+        codigo = codigo.replaceAll("\\ +", " ");
+        codigo = codigo.replaceAll("\\ \\n", "\\\n");
+
         return codigo;
     }
 
