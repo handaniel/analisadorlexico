@@ -13,6 +13,7 @@ public class HandlerIdentificador extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
+        System.out.println("Chegou aqui");
         if (token.getSimbolo().length() <= AbstractHandler.tamanhoMaxID && Pattern.matches("[[a-z]+][[a-z0-9]+|[_]+]*", token.getSimbolo())) {
             token.setCategoria("ID");
         } else {

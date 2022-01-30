@@ -14,7 +14,8 @@ public class HandlerChar extends AbstractHandler {
     public void executar(Token token) {
         if (token.getSimbolo().toLowerCase().equals("char")) {
             token.setCategoria("Especificador_CHAR");
-            this.setProximo(new HandlerInteger(token));
+        } else {
+        this.setProximo(new HandlerInteger(token));
         }
     }
 

@@ -49,17 +49,10 @@ public class PrincipalPresenter {
 
         String codigoPreProcessado = preProcessamento(codigo);
 
-        if (false) {
-            System.out.println(codigo);
-            System.out.println("*******************");
-            System.out.println(codigoPreProcessado);
-            System.out.println("*******************");
-        }
-
         String palavra = "";
         for (String linha : codigoPreProcessado.split("\n")) {
             LinhaCodigo novaLinha = new LinhaCodigo(linha, posicaoLinha++);
-            //System.out.println(linha);
+            // System.out.println(linha);
             for (int pos = 0; pos < novaLinha.getConteudo().length(); pos++) {
                 if (novaLinha.getConteudo().charAt(pos) != ' ') {
                     int fimToken = novaLinha.getConteudo().indexOf(" ", pos);
@@ -72,7 +65,7 @@ public class PrincipalPresenter {
 
                     Token novo = new Token(idToken++, palavra, "indefinido", pos, (fimToken - 1), novaLinha);
 
-                    //System.out.println(novo.getSimbolo());
+                    // System.out.println(novo.getSimbolo());
                     tokens.add(novo);
 
                     pos += palavra.length();
@@ -97,15 +90,15 @@ public class PrincipalPresenter {
 
     private String preProcessamento(String codigo) {
 
-        //Remove Comentários
+        // Remove Comentários
         codigo = codigo.replaceAll("(?m)^[\\ | \\\t]*\\/\\/.*", "");
         codigo = codigo.replaceAll("\\(\\*([\\s\\S]*)\\*\\)", "");
         codigo = codigo.replaceAll("\\{([\\s\\S]*)\\}", "");
 
-        //Remove Linhas Vazias
+        // Remove Linhas Vazias
         codigo = codigo.replaceAll("(?m)^[ \t]*\r?\n", "");
 
-        //Separacao caracteres
+        // Separacao caracteres
         codigo = codigo.replaceAll(";", " ; ");
         codigo = codigo.replaceAll(":", " : ");
         codigo = codigo.replaceAll("\\=", " \\= ");
@@ -113,7 +106,7 @@ public class PrincipalPresenter {
         codigo = codigo.replaceAll(",", " , ");
         codigo = codigo.replaceAll("'", " ' ");
 
-        //Remove tabulações, espaçoes desnecessários
+        // Remove tabulações, espaçoes desnecessários
         codigo = codigo.replaceAll("\t", " ");
         codigo = codigo.replaceAll("\\ +", " ");
         codigo = codigo.replaceAll("\\ \\n", "\\\n");
@@ -123,16 +116,14 @@ public class PrincipalPresenter {
 
     private void setTableModels() {
         tmAnaliseLex = new DefaultTableModel(
-                new Object[][]{},
-                new String[]{"ID", "Linha", "Lexema", "Token"}
-        );
+                new Object[][] {},
+                new String[] { "ID", "Linha", "Lexema", "Token" });
 
         view.getTblAnaliseLexica().setModel(tmAnaliseLex);
 
         tmSaidas = new DefaultTableModel(
-                new Object[][]{},
-                new String[]{"Erro", "Linha", "Posição", "ID do Token"}
-        );
+                new Object[][] {},
+                new String[] { "Erro", "Linha", "Posição", "ID do Token" });
 
         view.getTblSaidas().setModel(tmSaidas);
     }
@@ -158,11 +149,11 @@ public class PrincipalPresenter {
 
     private void preencherTabelaAnaliseLexica(ArrayList<Token> tokens) {
         for (Token t : tokens) {
-            tmAnaliseLex.addRow(new Object[]{
-                t.getId(),
-                t.getLinha().getPosicao(),
-                t.getSimbolo(),
-                t.getCategoria()
+            tmAnaliseLex.addRow(new Object[] {
+                    t.getId(),
+                    t.getLinha().getPosicao(),
+                    t.getSimbolo(),
+                    t.getCategoria()
             });
         }
 
@@ -173,11 +164,11 @@ public class PrincipalPresenter {
     private void preencherTabelaErros(ArrayList<Token> tokens) {
         if (!this.erros.getListErro().isEmpty()) {
             for (ErrorCompilacao erro : this.erros.getListErro()) {
-                tmSaidas.addRow(new Object[]{
-                    erro.getMensagemErro(),
-                    erro.getToken().getLinha().getPosicao(),
-                    erro.getToken().getPosicaoInicio(),
-                    erro.getToken().getId()
+                tmSaidas.addRow(new Object[] {
+                        erro.getMensagemErro(),
+                        erro.getToken().getLinha().getPosicao(),
+                        erro.getToken().getPosicaoInicio(),
+                        erro.getToken().getId()
                 });
             }
 
