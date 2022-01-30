@@ -2,6 +2,7 @@ package ufes.cmp.analisadorlexico.chain.lexico.identificador;
 
 import java.util.regex.Pattern;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.error.HandlerError;
 import ufes.cmp.analisadorlexico.model.Token;
 
 public class HandlerIdentificador extends AbstractHandler {
@@ -15,7 +16,7 @@ public class HandlerIdentificador extends AbstractHandler {
         if (token.getSimbolo().length() <= AbstractHandler.tamanhoMaxID && Pattern.matches("[[a-z]+][[a-z0-9]+|[_]+]*", token.getSimbolo())) {
             token.setCategoria("identificador");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerError(token));
         }
     }
 

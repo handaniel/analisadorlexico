@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerCONST extends AbstractHandler {
+public class HandlerConst extends AbstractHandler {
 
-    public HandlerCONST(Token token) {
+    public HandlerConst(Token token) {
         super(token);
     }
 
@@ -15,7 +15,7 @@ public class HandlerCONST extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("const")) {
             token.setCategoria("Especificador_CONST");
         } else {
-            this.setProximo(new HandlerPROGRAM(token));
+            this.setProximo(new HandlerProgram(token));
         }
     }
 

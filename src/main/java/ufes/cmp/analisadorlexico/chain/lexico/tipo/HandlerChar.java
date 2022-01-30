@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerCHAR extends AbstractHandler {
+public class HandlerChar extends AbstractHandler {
     
-    public HandlerCHAR(Token token) {
+    public HandlerChar(Token token) {
         super(token);
     }
     
@@ -14,7 +14,7 @@ public class HandlerCHAR extends AbstractHandler {
     public void executar(Token token) {
         if (token.getSimbolo().toLowerCase().equals("char")) {
             token.setCategoria("Especificador_CHAR");
-            this.setProximo(new HandlerINTEGER(token));
+            this.setProximo(new HandlerInteger(token));
         }
     }
     

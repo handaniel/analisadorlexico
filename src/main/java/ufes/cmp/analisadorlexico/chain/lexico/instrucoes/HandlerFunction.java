@@ -15,7 +15,7 @@ public class HandlerFunction extends AbstractHandler {
         if(token.getSimbolo().toLowerCase().equals("function")){
             token.setCategoria("Instrucao_function");
         } else {
-            this.setProximo(new HandlerIF(token));
+            this.setProximo(new HandlerIf(token));
         }
     }
 

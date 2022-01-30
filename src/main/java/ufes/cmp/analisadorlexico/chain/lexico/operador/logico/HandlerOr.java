@@ -5,8 +5,8 @@ import ufes.cmp.analisadorlexico.chain.lexico.operador.aritmetico.HandlerDivisao
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerOR extends AbstractHandler{
-    public HandlerOR(Token token){
+public class HandlerOr extends AbstractHandler{
+    public HandlerOr(Token token){
         super(token);
     }
 

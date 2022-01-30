@@ -12,7 +12,7 @@ public class HandlerMenor extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if (token.getSimbolo().toString().toLowerCase().equals("<")) {
+        if (token.getSimbolo().toLowerCase().equals("<")) {
             token.setCategoria("operador_comparacao_menor");
         } else {
             this.setProximo(new HandlerMenorIgual(token));

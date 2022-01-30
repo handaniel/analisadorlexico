@@ -5,9 +5,9 @@ import ufes.cmp.analisadorlexico.chain.lexico.delimitadoresinstrucoes.HandlerPon
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerEND extends AbstractHandler {
+public class HandlerEnd extends AbstractHandler {
 
-    public HandlerEND(Token token) {
+    public HandlerEnd(Token token) {
         super(token);
     }
 

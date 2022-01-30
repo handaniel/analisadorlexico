@@ -3,9 +3,9 @@ package ufes.cmp.analisadorlexico.chain.lexico.especificadores;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 
-public class HandlerPROGRAM extends AbstractHandler {
+public class HandlerProgram extends AbstractHandler {
     
-    public HandlerPROGRAM(Token token) {
+    public HandlerProgram(Token token) {
         super(token);
     }
     
@@ -14,7 +14,7 @@ public class HandlerPROGRAM extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("program")) {
             token.setCategoria("Especificador_PROGRAM");
         } else {
-            this.setProximo(new HandlerVAR(token));
+            this.setProximo(new HandlerVar(token));
         }
     }
     

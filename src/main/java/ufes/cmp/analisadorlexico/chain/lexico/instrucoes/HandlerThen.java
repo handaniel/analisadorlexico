@@ -1,12 +1,13 @@
 package ufes.cmp.analisadorlexico.chain.lexico.instrucoes;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.operador.logico.HandlerAnd;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerTHEN extends AbstractHandler {
+public class HandlerThen extends AbstractHandler {
 
-    public HandlerTHEN(Token token) {
+    public HandlerThen(Token token) {
         super(token);
     }
 
@@ -15,7 +16,7 @@ public class HandlerTHEN extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("then")) {
             token.setCategoria("Instrucao_THEN");
         } else {
-            this.setProximo(new HandlerWRITELN(token));
+            this.setProximo(new HandlerAnd(token));
         }
     }
 

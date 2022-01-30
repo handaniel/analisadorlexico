@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerBEGIN extends AbstractHandler {
+public class HandlerBegin extends AbstractHandler {
 
-    public HandlerBEGIN(Token token) {
+    public HandlerBegin(Token token) {
         super(token);
     }
 
@@ -15,7 +15,7 @@ public class HandlerBEGIN extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("begin")) {
             token.setCategoria("Delimitador_bloco_BEGIN");
         } else {
-            this.setProximo(new HandlerEND(token));
+            this.setProximo(new HandlerEnd(token));
         }
     }
 

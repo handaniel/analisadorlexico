@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerIF extends AbstractHandler {
+public class HandlerIf extends AbstractHandler {
 
-    public HandlerIF(Token token) {
+    public HandlerIf(Token token) {
         super(token);
     }
 

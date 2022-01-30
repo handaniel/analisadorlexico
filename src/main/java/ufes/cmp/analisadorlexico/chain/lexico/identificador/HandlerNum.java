@@ -5,9 +5,9 @@ import java.util.regex.Pattern;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 
-public class HandlerNUM extends AbstractHandler {
+public class HandlerNum extends AbstractHandler {
 
-    public HandlerNUM(Token token) {
+    public HandlerNum(Token token) {
         super(token);
     }
 

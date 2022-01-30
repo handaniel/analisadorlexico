@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import javax.swing.table.DefaultTableModel;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
-import ufes.cmp.analisadorlexico.chain.lexico.especificadores.HandlerPROGRAM;
+import ufes.cmp.analisadorlexico.chain.lexico.especificadores.HandlerProgram;
 import ufes.cmp.analisadorlexico.model.Erros;
 import ufes.cmp.analisadorlexico.model.LinhaCodigo;
 import ufes.cmp.analisadorlexico.model.Token;
@@ -132,7 +132,7 @@ public class PrincipalPresenter {
     private ArrayList<Token> chainAnaliseLexica(ArrayList<Token> tokens) {
         
         for (Token token : tokens) {
-            AbstractHandler handler = new HandlerPROGRAM(token);
+            AbstractHandler handler = new HandlerProgram(token);
             
             if (token.getCategoria().toLowerCase().equals("error")
                     || token.getCategoria().toLowerCase().equals("indefinido")) {
@@ -143,5 +143,7 @@ public class PrincipalPresenter {
         
         return tokens;
     }
+    
+    
     
 }

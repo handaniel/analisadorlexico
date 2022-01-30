@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerCONTINUE extends AbstractHandler {
+public class HandlerContinue extends AbstractHandler {
 
-    public HandlerCONTINUE(Token token) {
+    public HandlerContinue(Token token) {
         super(token);
     }
 
@@ -15,7 +15,7 @@ public class HandlerCONTINUE extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("continue")) {
             token.setCategoria("Instrucao_CONTINUE");
         } else {
-            this.setProximo(new HandlerELSE(token));
+            this.setProximo(new HandlerElse(token));
         }
     }
 

@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerBREAK extends AbstractHandler {
+public class HandlerBreak extends AbstractHandler {
 
-    public HandlerBREAK(Token token) {
+    public HandlerBreak(Token token) {
         super(token);
     }
 
@@ -15,7 +15,7 @@ public class HandlerBREAK extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("break")) {
             token.setCategoria("Instrucao_BREAK");
         } else {
-            this.setProximo(new HandlerCONTINUE(token));
+            this.setProximo(new HandlerContinue(token));
         }
     }
 

@@ -1,7 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.operador.comparadores;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
-import ufes.cmp.analisadorlexico.chain.lexico.identificador.HandlerNUM;
+import ufes.cmp.analisadorlexico.chain.lexico.identificador.HandlerNum;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -13,10 +13,10 @@ public class HandlerMenorIgual extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if(token.getSimbolo().toString().toLowerCase().equals("<=")) {
+        if(token.getSimbolo().toLowerCase().equals("<=")) {
             token.setCategoria("operador_comparacao_menor_igual");
         } else {
-            this.setProximo(new HandlerNUM(token));
+            this.setProximo(new HandlerNum(token));
         }
         
     }

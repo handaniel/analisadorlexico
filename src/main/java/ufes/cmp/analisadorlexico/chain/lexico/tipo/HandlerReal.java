@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerREAL extends AbstractHandler {
+public class HandlerReal extends AbstractHandler {
 
-    public HandlerREAL(Token token) {
+    public HandlerReal(Token token) {
         super(token);
     }
 
@@ -15,7 +15,7 @@ public class HandlerREAL extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("real")) {
             token.setCategoria("Especificador_REAL");
         } else {
-            this.setProximo(new HandlerSTRING(token));
+            this.setProximo(new HandlerString(token));
         }
     }
 

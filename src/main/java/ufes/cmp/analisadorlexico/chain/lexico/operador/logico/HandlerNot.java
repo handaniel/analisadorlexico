@@ -4,8 +4,8 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerNOT extends AbstractHandler{
-    public HandlerNOT(Token token){
+public class HandlerNot extends AbstractHandler{
+    public HandlerNot(Token token){
         super(token);
     }
 
@@ -14,7 +14,7 @@ public class HandlerNOT extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("not") == 0){
             token.setCategoria("operador_logico_NOT");
         } else {
-            this.setProximo(new HandlerOR(token));
+            this.setProximo(new HandlerOr(token));
         }
     }
 

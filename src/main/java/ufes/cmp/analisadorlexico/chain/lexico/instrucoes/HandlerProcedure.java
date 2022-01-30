@@ -15,7 +15,7 @@ public class HandlerProcedure extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("procedure")) {
             token.setCategoria("Instrucao_procedure");
         } else {
-            this.setProximo(new HandlerREADLN(token));
+            this.setProximo(new HandlerThen(token));
         }
     }
 

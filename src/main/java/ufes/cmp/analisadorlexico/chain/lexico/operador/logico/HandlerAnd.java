@@ -4,8 +4,8 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerAND extends AbstractHandler{
-    public HandlerAND(Token token){
+public class HandlerAnd extends AbstractHandler{
+    public HandlerAnd(Token token){
         super(token);
     }
 
@@ -14,7 +14,7 @@ public class HandlerAND extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("and") == 0){
             token.setCategoria("operador_logico_AND");
         } else {
-            this.setProximo(new HandlerNOT(token));
+            this.setProximo(new HandlerNot(token));
         }
     }
 
