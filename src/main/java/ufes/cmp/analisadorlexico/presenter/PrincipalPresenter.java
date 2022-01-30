@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.chain.lexico.delimitadoresbloco.HandlerBegin;
-import ufes.cmp.analisadorlexico.chain.lexico.especificadores.HandlerProgram;
 import ufes.cmp.analisadorlexico.model.ErrorCompilacao;
 import ufes.cmp.analisadorlexico.model.Erros;
 import ufes.cmp.analisadorlexico.model.LinhaCodigo;
@@ -100,6 +99,10 @@ public class PrincipalPresenter {
         codigo = codigo.replaceAll("(?m)^[ \t]*\r?\n", "");
 
         // Separacao caracteres
+        codigo = codigo.replaceAll("\\==", " \\=.= ");
+        codigo = codigo.replaceAll("\\=", " \\= ");
+        codigo = codigo.replaceAll("\\= \\. \\=", "\\==");
+
         codigo = codigo.replaceAll(";", " ; ");
         codigo = codigo.replaceAll(":", " : ");
         codigo = codigo.replaceAll("\\=", " \\= ");
