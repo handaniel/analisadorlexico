@@ -14,7 +14,7 @@ public class HandlerFechaParenteses extends AbstractHandler {
     @Override
     public void executar(Token token) {
         if (token.getSimbolo().toLowerCase().equals(")")) {
-            token.setCategoria("Separador_Abre_Parenteses");
+            token.setCategoria("Separador_Fecha_Parenteses");
         } else {
             this.setProximo(new HandlerIdentificador(token));
         }

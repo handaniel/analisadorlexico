@@ -1,7 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.operador;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
-import ufes.cmp.analisadorlexico.chain.lexico.identificador.HandlerIdentificador;
+import ufes.cmp.analisadorlexico.chain.lexico.identificador.HandlerLiteral;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -16,7 +16,7 @@ public class HandlerAtribuicao extends AbstractHandler {
         if(token.getSimbolo().toLowerCase().equals(":=")) {
             token.setCategoria("operador_atribuicao");
         } else {
-            this.setProximo(new HandlerIdentificador(token));
+            this.setProximo(new HandlerLiteral(token));
         }
         
     }
