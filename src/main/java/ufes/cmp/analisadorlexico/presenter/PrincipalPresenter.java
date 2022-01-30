@@ -99,16 +99,16 @@ public class PrincipalPresenter {
         codigo = codigo.replaceAll("(?m)^[ \t]*\r?\n", "");
 
         // Separacao caracteres
-        codigo = codigo.replaceAll("\\==", " \\=.= ");
-        codigo = codigo.replaceAll("\\=", " \\= ");
-        codigo = codigo.replaceAll("\\= \\. \\=", "\\==");
 
         codigo = codigo.replaceAll(";", " ; ");
+        codigo = codigo.replaceAll(",", " , ");
+        
         codigo = codigo.replaceAll(":", " : ");
         codigo = codigo.replaceAll("\\=", " \\= ");
-        codigo = codigo.replaceAll("\\:\\=", " \\:\\= ");
-        codigo = codigo.replaceAll(",", " , ");
-        codigo = codigo.replaceAll("'", " ' ");
+
+        codigo = codigo.replaceAll("\\> =", " >= ");
+        codigo = codigo.replaceAll("\\< =", " <= ");
+        codigo = codigo.replaceAll("\\: =", " := ");
 
         // Remove tabulações, espaçoes desnecessários
         codigo = codigo.replaceAll("\t", " ");

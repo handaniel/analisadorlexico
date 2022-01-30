@@ -13,7 +13,6 @@ public class HandlerDiferente extends AbstractHandler {
     @Override
     public void executar(Token token) {
         if(token.getSimbolo().toLowerCase().equals("<>")) {
-            System.out.println("bosta");
             token.setCategoria("operador_comparacao_diferente");
         } else {
             this.setProximo(new HandlerIgual(token));
@@ -29,7 +28,7 @@ public class HandlerDiferente extends AbstractHandler {
             return "Esse token tem similaridade com: operador_comparacao_diferente; " + next.recuperarErro(token); 
         }
 
-        return recuperarErro(token);
+        return next.recuperarErro(token);
     }
     
 }
