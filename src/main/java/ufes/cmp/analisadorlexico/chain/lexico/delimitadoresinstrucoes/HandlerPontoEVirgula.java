@@ -15,7 +15,7 @@ public class HandlerPontoEVirgula extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals(";")) {
             token.setCategoria("Delimitador_instrucoes_pontoevirgula");
         } else {
-            this.setProximo(new HandlerPontoEVirgula(token));
+            this.setProximo(new HandlerDoisPontos(token));
         }
     }
 

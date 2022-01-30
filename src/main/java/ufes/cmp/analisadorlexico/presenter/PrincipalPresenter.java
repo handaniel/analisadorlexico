@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.delimitadoresbloco.HandlerBegin;
 import ufes.cmp.analisadorlexico.chain.lexico.especificadores.HandlerProgram;
 import ufes.cmp.analisadorlexico.model.ErrorCompilacao;
 import ufes.cmp.analisadorlexico.model.Erros;
@@ -131,11 +132,8 @@ public class PrincipalPresenter {
     private ArrayList<Token> chainAnaliseLexica(ArrayList<Token> tokens) {
 
         for (Token token : tokens) {
-            System.out.println("Token: " + token.getSimbolo());
 
-            AbstractHandler handler = new HandlerProgram(token);
-
-            System.out.println("Categoria: " + token.getCategoria());
+            AbstractHandler handler = new HandlerBegin(token);
 
             if (token.getCategoria().toLowerCase().equals("error")
                     || token.getCategoria().toLowerCase().equals("indefinido")) {
@@ -148,6 +146,9 @@ public class PrincipalPresenter {
     }
 
     private void preencherTabelaAnaliseLexica(ArrayList<Token> tokens) {
+        tmAnaliseLex.setNumRows(0);
+        this.view.getTblAnaliseLexica().setModel(tmAnaliseLex);
+
         for (Token t : tokens) {
             tmAnaliseLex.addRow(new Object[] {
                     t.getId(),

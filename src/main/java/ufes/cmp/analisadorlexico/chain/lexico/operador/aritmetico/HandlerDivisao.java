@@ -4,8 +4,8 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerDivisaoReal extends AbstractHandler{
-    public HandlerDivisaoReal(Token token){
+public class HandlerDivisao extends AbstractHandler{
+    public HandlerDivisao(Token token){
         super(token);
     }
 
@@ -14,7 +14,7 @@ public class HandlerDivisaoReal extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("/") == 0){
             token.setCategoria("operador_aritmetico_divisao_Real");
         } else {
-            this.setProximo(new HandlerDivisaoRest(token));
+            this.setProximo(new HandlerMultiplicacao(token));
         }
     }
 
