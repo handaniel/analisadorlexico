@@ -15,7 +15,9 @@ public class HandlerSubtracao extends AbstractHandler{
     public void executar(Token token) {
         if (token.getSimbolo().toString().toLowerCase().compareTo("-") == 0){
             token.setCategoria("operador_aritmetico_subtracao");
-        }
+        }else{
+            this.setProximo(next);
+             }
     }
 
     @Override
