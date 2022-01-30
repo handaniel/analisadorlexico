@@ -16,7 +16,7 @@ public class HandlerMultiplicacao extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("*") == 0){
             token.setCategoria("operador_aritmetico_multiplicacao");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerSoma(token));
         }
     }
 

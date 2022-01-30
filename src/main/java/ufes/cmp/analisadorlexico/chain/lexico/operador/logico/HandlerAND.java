@@ -14,7 +14,7 @@ public class HandlerAND extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("and") == 0){
             token.setCategoria("operador_logico_AND");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerNOT(token));
         }
     }
 

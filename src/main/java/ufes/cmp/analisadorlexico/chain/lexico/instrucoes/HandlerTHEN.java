@@ -4,9 +4,9 @@ import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
-public class HandlerITHEN extends AbstractHandler {
+public class HandlerTHEN extends AbstractHandler {
 
-    public HandlerITHEN(Token token) {
+    public HandlerTHEN(Token token) {
         super(token);
     }
 
@@ -15,7 +15,7 @@ public class HandlerITHEN extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("then")) {
             token.setCategoria("Instrucao_THEN");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerWRITELN(token));
         }
     }
 

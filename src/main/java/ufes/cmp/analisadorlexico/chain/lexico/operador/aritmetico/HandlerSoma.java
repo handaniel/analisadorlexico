@@ -15,7 +15,7 @@ public class HandlerSoma extends AbstractHandler {
          if (token.getSimbolo().toString().toLowerCase().compareTo("+") == 0){
             token.setCategoria("operador_aritmetico_soma");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerSubtracao(token));
         }
     }
 

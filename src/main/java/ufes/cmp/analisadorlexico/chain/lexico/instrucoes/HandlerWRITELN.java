@@ -1,6 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.instrucoes;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.operador.logico.HandlerAND;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -14,7 +15,7 @@ public class HandlerWRITELN extends AbstractHandler{
          if (token.getSimbolo().toLowerCase().equals("writeln")) {
             token.setCategoria("Instrucao_writeln");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerAND(token));
         }
     }
 
