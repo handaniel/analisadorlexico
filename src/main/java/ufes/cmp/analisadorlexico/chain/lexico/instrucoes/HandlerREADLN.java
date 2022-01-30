@@ -15,7 +15,7 @@ public class HandlerREADLN extends AbstractHandler{
         if (token.getSimbolo().toLowerCase().equals("readln")) {
             token.setCategoria("Instrucao_readln");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerTHEN(token));
         }
     }
 

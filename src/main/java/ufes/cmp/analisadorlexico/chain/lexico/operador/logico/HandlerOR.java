@@ -1,6 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.operador.logico;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.operador.aritmetico.HandlerDivisaoInteira;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -14,7 +15,7 @@ public class HandlerOR extends AbstractHandler{
         if (token.getSimbolo().toString().toLowerCase().compareTo("or") == 0){
             token.setCategoria("operador_logico_OR");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerDivisaoInteira(token));
         }
     }
 

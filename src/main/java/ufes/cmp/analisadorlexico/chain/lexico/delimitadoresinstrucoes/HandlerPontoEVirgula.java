@@ -1,6 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.delimitadoresinstrucoes;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.especificadores.HandlerCONST;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -15,7 +16,7 @@ public class HandlerPontoEVirgula extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals(";")) {
             token.setCategoria("Delimitador_instrucoes_pontoevirgula");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerCONST(token));
         }
     }
 

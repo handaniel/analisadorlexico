@@ -1,6 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.tipo;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
+import ufes.cmp.analisadorlexico.chain.lexico.instrucoes.HandlerBREAK;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -15,7 +16,7 @@ public class HandlerSTRING extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("string")) {
             token.setCategoria("Especificador_STRING");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerBREAK(token));
         }
     }
 

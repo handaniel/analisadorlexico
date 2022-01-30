@@ -15,7 +15,7 @@ public class HandlerBREAK extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals("break")) {
             token.setCategoria("Instrucao_BREAK");
         } else {
-            this.setProximo(next);
+            this.setProximo(new HandlerCONTINUE(token));
         }
     }
 
