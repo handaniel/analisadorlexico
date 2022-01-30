@@ -1,4 +1,3 @@
-
 package ufes.cmp.analisadorlexico.chain.lexico.operador.aritmetico;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
