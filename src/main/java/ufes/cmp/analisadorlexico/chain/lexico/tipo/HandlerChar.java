@@ -5,11 +5,11 @@ import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
 public class HandlerChar extends AbstractHandler {
-    
+
     public HandlerChar(Token token) {
         super(token);
     }
-    
+
     @Override
     public void executar(Token token) {
         if (token.getSimbolo().toLowerCase().equals("char")) {
@@ -17,7 +17,7 @@ public class HandlerChar extends AbstractHandler {
             this.setProximo(new HandlerInteger(token));
         }
     }
-    
+
     @Override
     public String recuperarErro(Token token) {
         if (StringUtils.similarity(token.getSimbolo(), "char") >= 0.8) {
@@ -25,8 +25,8 @@ public class HandlerChar extends AbstractHandler {
         } else if (StringUtils.similarity(token.getSimbolo(), "char") > 0.5) {
             return "Esse token tem similaridade com: Especificador_CHAR; " + next.recuperarErro(token);
         }
-        
+
         return next.recuperarErro(token);
     }
-    
+
 }

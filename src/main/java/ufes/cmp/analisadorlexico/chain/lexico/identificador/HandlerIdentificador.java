@@ -14,7 +14,7 @@ public class HandlerIdentificador extends AbstractHandler {
     @Override
     public void executar(Token token) {
         if (token.getSimbolo().length() <= AbstractHandler.tamanhoMaxID && Pattern.matches("[[a-z]+][[a-z0-9]+|[_]+]*", token.getSimbolo())) {
-            token.setCategoria("identificador");
+            token.setCategoria("ID");
         } else {
             this.setProximo(new HandlerError(token));
         }

@@ -2,6 +2,7 @@ package ufes.cmp.analisadorlexico.chain.lexico.especificadores;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.model.Token;
+import ufes.cmp.analisadorlexico.utils.StringUtils;
 
 public class HandlerProgram extends AbstractHandler {
     
@@ -20,7 +21,12 @@ public class HandlerProgram extends AbstractHandler {
     
     @Override
     public String recuperarErro(Token token) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (StringUtils.similarity(token.getSimbolo(), "program") >= 0.8) {
+            return "Esse token pode ser substituido por: Especificador_PROGRAM ";
+        } else if (StringUtils.similarity(token.getSimbolo(), "program") > 0.5) {
+            return "Esse token tem similaridade com: Especificador_PROGRAM; " + next.recuperarErro(token);
+        }        
+        return next.recuperarErro(token);
     }
     
 }
