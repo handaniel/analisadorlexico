@@ -14,6 +14,10 @@ public abstract class AbstractHandler {
     public AbstractHandler(AbstractHandler next) {
         this.next = next;
     }
+    
+    public void setProximo(AbstractHandler proximo) {
+        this.next = proximo;
+    }
 
     public abstract void executar(Token token);
 

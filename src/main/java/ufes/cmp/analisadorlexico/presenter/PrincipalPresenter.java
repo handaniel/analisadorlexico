@@ -38,7 +38,7 @@ public class PrincipalPresenter {
         view.getTblSaidas().setModel(tmSaidas);
 
         view.getBtnCompilar().addActionListener((ActionEvent ae) -> {
-            compilar();
+            compilar(this.view.getTxtCodigo().getText().toLowerCase());
         });
 
         view.getCkbExecucaoTempoReal().addActionListener((ActionEvent ae) -> {
@@ -47,8 +47,17 @@ public class PrincipalPresenter {
 
     }
 
-    private void compilar() {
-        System.out.println("Falta implementar!");
+    private void compilar(String codigo) {
+        this.linhas = new ArrayList<>();
+        this.tokens = new ArrayList<>();
+        int posicaoLinha = 1;
+        int idToken = 1;
+
+        String codigoPreProcessado = preProcessamento(codigo);
+
+        System.out.println(codigo);
+        System.out.println(codigoPreProcessado);
+
     }
 
     private void compilarEmTempoReal() {
@@ -57,6 +66,16 @@ public class PrincipalPresenter {
         } else {
             System.out.println("Desativado");
         }
+    }
+
+    private String preProcessamento(String codigo) {
+
+        //Remove Comentários
+        codigo = codigo.replaceAll("(?m)^\\/\\/.*", "");
+        codigo = codigo.replaceAll("\\(\\*([\\s\\S]*)\\*\\)", "");
+        codigo = codigo.replaceAll("\\{([\\s\\S]*)\\}", "");
+
+        return codigo;
     }
 
 }
