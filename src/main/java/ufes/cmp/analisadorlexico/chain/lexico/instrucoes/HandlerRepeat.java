@@ -1,7 +1,6 @@
 package ufes.cmp.analisadorlexico.chain.lexico.instrucoes;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
-import ufes.cmp.analisadorlexico.chain.lexico.identificador.HandlerIdentificador;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
