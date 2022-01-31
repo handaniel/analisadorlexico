@@ -5,8 +5,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.Timer;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.chain.lexico.delimitadoresbloco.HandlerBegin;
@@ -50,6 +53,19 @@ public class PrincipalPresenter {
             }
 
         });
+
+        this.view.getTblSaidas().getSelectionModel().addListSelectionListener(
+
+                new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (view.getTblSaidas().getSelectedRow() >= 0) {
+                            ErroSelecionado(view.getTblSaidas().getSelectedRow());
+                        } else {
+                            view.getTxtCodigo().setSelectionColor(new Color(176, 197, 227));
+                        }
+                    }
+                });
 
     }
 
@@ -211,6 +227,10 @@ public class PrincipalPresenter {
     }
 
     private void preencherTabelaErros(ArrayList<Token> tokens) {
+
+        tmSaidas.setNumRows(0);
+        this.view.getTblSaidas().setModel(tmSaidas);
+
         if (!this.erros.getListErro().isEmpty()) {
             for (ErrorCompilacao erro : this.erros.getListErro()) {
                 tmSaidas.addRow(new Object[] {
@@ -223,6 +243,25 @@ public class PrincipalPresenter {
 
             this.view.getTblSaidas().setModel(tmSaidas);
             this.erros = new Erros();
+        }
+    }
+
+    private void ErroSelecionado(int linha) {
+        int idToken = (int) this.view.getTblSaidas().getValueAt(linha, 3);
+
+        Token erroSelecionado = null;
+        for (Token token : tokens) {
+            if (token.getId() == idToken) {
+                erroSelecionado = token;
+                break;
+            }
+        }
+
+        if (erroSelecionado != null) {
+            this.view.getTxtCodigo().setSelectionStart(erroSelecionado.getPosicaoInicio());
+            this.view.getTxtCodigo().setSelectionEnd(erroSelecionado.getPosicaoFim());
+            this.view.getTxtCodigo().setSelectionColor(Color.PINK);
+            this.view.getTxtCodigo().requestFocus();
         }
     }
 
