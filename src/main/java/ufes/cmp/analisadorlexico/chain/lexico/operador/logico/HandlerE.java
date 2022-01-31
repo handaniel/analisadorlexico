@@ -11,7 +11,7 @@ public class HandlerE extends AbstractHandler{
 
     @Override
     public void executar(Token token) {
-        if (token.getSimbolo().toString().toLowerCase().compareTo("E") == 0){
+        if (token.getSimbolo().toString().toLowerCase().compareTo("e") == 0){
             token.setCategoria("operador_logico_E");
         } else {
             this.setProximo(new HandlerOu(token));

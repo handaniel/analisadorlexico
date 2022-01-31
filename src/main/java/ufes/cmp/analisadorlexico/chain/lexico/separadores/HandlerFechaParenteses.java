@@ -1,7 +1,6 @@
 package ufes.cmp.analisadorlexico.chain.lexico.separadores;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
-import ufes.cmp.analisadorlexico.chain.lexico.identificador.HandlerIdentificador;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -16,7 +15,7 @@ public class HandlerFechaParenteses extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals(")")) {
             token.setCategoria("Separador_Fecha_Parenteses");
         } else {
-            this.setProximo(new HandlerIdentificador(token));
+            this.setProximo(new HandlerVirgula(token));
         }
 
     }

@@ -13,23 +13,23 @@ public class HandlerAtribuicao extends AbstractHandler {
 
     @Override
     public void executar(Token token) {
-        if(token.getSimbolo().toLowerCase().equals(":=")) {
+        if (token.getSimbolo().toLowerCase().equals(":=")) {
             token.setCategoria("operador_atribuicao");
         } else {
             this.setProximo(new HandlerLiteral(token));
         }
-        
+
     }
 
     @Override
     public String recuperarErro(Token token) {
-        if(StringUtils.similarity(token.getSimbolo(), ":=") >= 0.8) {
+        if (StringUtils.similarity(token.getSimbolo(), ":=") >= 0.8) {
             return "Esse token pode ser substituido por: operador_atribuicao";
-        } else if(StringUtils.similarity(token.getSimbolo(), ":=") > 0.5) {
-            return "Esse token tem similaridade com: operador_atribuicao; " + next.recuperarErro(token); 
+        } else if (StringUtils.similarity(token.getSimbolo(), ":=") > 0.5) {
+            return "Esse token tem similaridade com: operador_atribuicao; " + next.recuperarErro(token);
         }
 
         return next.recuperarErro(token);
     }
-    
+
 }

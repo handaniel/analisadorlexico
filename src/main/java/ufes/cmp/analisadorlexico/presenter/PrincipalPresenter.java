@@ -64,7 +64,7 @@ public class PrincipalPresenter {
         String palavra = "";
         for (String linha : codigoPreProcessado.split("\n")) {
             LinhaCodigo novaLinha = new LinhaCodigo(linha, posicaoLinha++);
-            // System.out.println(linha);
+
             for (int pos = 0; pos < novaLinha.getConteudo().length(); pos++) {
                 if (novaLinha.getConteudo().charAt(pos) != ' ') {
                     int fimToken = novaLinha.getConteudo().indexOf(" ", pos);
@@ -77,7 +77,6 @@ public class PrincipalPresenter {
 
                     Token novo = new Token(idToken++, palavra, "indefinido", pos, (fimToken - 1), novaLinha);
 
-                    // System.out.println(novo.getSimbolo());
                     tokens.add(novo);
 
                     pos += palavra.length();
@@ -145,8 +144,8 @@ public class PrincipalPresenter {
 
         // Separacao caracteres
 
-        codigo = codigo.replaceAll(";", " ; ");
-        codigo = codigo.replaceAll(",", " , ");
+        codigo = codigo.replaceAll("\\;", " ; ");
+        codigo = codigo.replaceAll("\\,", " , ");
         codigo = codigo.replaceAll("\\(", " ( ");
         codigo = codigo.replaceAll("\\)", " ) ");
 
