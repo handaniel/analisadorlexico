@@ -1,7 +1,7 @@
 package ufes.cmp.analisadorlexico.chain.lexico.separadores;
 
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
-import ufes.cmp.analisadorlexico.chain.lexico.identificador.HandlerIdentificador;
+import ufes.cmp.analisadorlexico.chain.lexico.instrucoes.HandlerWhile;
 import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.utils.StringUtils;
 
@@ -16,7 +16,7 @@ public class HandlerVirgula extends AbstractHandler {
         if (token.getSimbolo().toLowerCase().equals(",")) {
             token.setCategoria("separador_virgula");
         } else {
-            this.setProximo(new HandlerIdentificador(token));
+            this.setProximo(new HandlerWhile(token));
         }
 
     }
