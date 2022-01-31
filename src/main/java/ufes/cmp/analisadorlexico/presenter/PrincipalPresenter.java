@@ -2,7 +2,11 @@ package ufes.cmp.analisadorlexico.presenter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.chain.lexico.delimitadoresbloco.HandlerBegin;
@@ -21,22 +25,30 @@ public class PrincipalPresenter {
     private KeyListener keyListener;
     private Erros erros;
     private ArrayList<LinhaCodigo> linhas;
+    private boolean listenerAlteracoes = false;
+    private Timer timer;
 
     public PrincipalPresenter() {
 
         this.erros = new Erros();
 
-        view = new PrincipalView();
-        view.setVisible(true);
+        this.view = new PrincipalView();
+        this.view.setVisible(true);
 
-        setTableModels();
+        this.setTableModels();
 
-        view.getBtnCompilar().addActionListener((ActionEvent ae) -> {
+        this.view.getBtnCompilar().addActionListener((ActionEvent ae) -> {
             compilar(this.view.getTxtCodigo().getText().toLowerCase());
         });
 
-        view.getCkbExecucaoTempoReal().addActionListener((ActionEvent ae) -> {
-            compilarEmTempoReal();
+        this.view.getCkbExecucaoTempoReal().addActionListener((ActionEvent ae) -> {
+
+            if (view.getCkbExecucaoTempoReal().isSelected()) {
+                compilarEmTempoReal();
+            } else {
+                this.view.getTxtCodigo().removeKeyListener(keyListener);
+            }
+
         });
 
     }
@@ -81,10 +93,43 @@ public class PrincipalPresenter {
     }
 
     private void compilarEmTempoReal() {
-        if (view.getCkbExecucaoTempoReal().isSelected()) {
-            System.out.println("Ativado");
+        keyListener = new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                listenerAlteracoes = true;
+                actionListenerKeyReleasedTextArea();
+            }
+        };
+
+        this.view.getTxtCodigo().addKeyListener(keyListener);
+    }
+
+    protected void actionListenerKeyReleasedTextArea() {
+        view.getTblAnaliseLexica().clearSelection();
+
+        if (listenerAlteracoes) {
+            if (timer != null) {
+                timer.stop();
+                timer = null;
+            }
+
+            ActionListener action = new ActionListener() {
+                @Override
+                public void actionPerformed(@SuppressWarnings("unused") java.awt.event.ActionEvent e) {
+                    if (listenerAlteracoes) {
+                        listenerAlteracoes = false;
+                        compilar(view.getTxtCodigo().getText());
+                    }
+                }
+            };
+
+            timer = new Timer(1000, action);
+            timer.start();
         } else {
-            System.out.println("Desativado");
+            if (timer != null) {
+                timer.stop();
+                timer = null;
+            }
         }
     }
 
