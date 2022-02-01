@@ -55,17 +55,16 @@ public class PrincipalPresenter {
         });
 
         this.view.getTblSaidas().getSelectionModel().addListSelectionListener(
-
                 new ListSelectionListener() {
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        if (view.getTblSaidas().getSelectedRow() >= 0) {
-                            ErroSelecionado(view.getTblSaidas().getSelectedRow());
-                        } else {
-                            view.getTxtCodigo().setSelectionColor(new Color(176, 197, 227));
-                        }
-                    }
-                });
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (view.getTblSaidas().getSelectedRow() >= 0) {
+                    ErroSelecionado(view.getTblSaidas().getSelectedRow());
+                } else {
+                    view.getTxtCodigo().setSelectionColor(new Color(176, 197, 227));
+                }
+            }
+        });
 
     }
 
@@ -159,17 +158,17 @@ public class PrincipalPresenter {
         codigo = codigo.replaceAll("(?m)^[ \t]*\r?\n", "");
 
         // Separacao caracteres
-
         codigo = codigo.replaceAll("\\;", " ; ");
         codigo = codigo.replaceAll("\\,", " , ");
         codigo = codigo.replaceAll("\\(", " ( ");
         codigo = codigo.replaceAll("\\)", " ) ");
+        codigo = codigo.replaceAll("\\:", " : ");
 
         codigo = codigo.replaceAll("\\=", " \\= ");
 
         codigo = codigo.replaceAll("\\> =", " >= ");
         codigo = codigo.replaceAll("\\< =", " <= ");
-        codigo = codigo.replaceAll("\\: \\=", " := ");
+        codigo = codigo.replaceAll("\\:  \\= ", " := ");
 
         // Remove tabulações, espaçoes desnecessários
         codigo = codigo.replaceAll("\t", " ");
@@ -181,14 +180,24 @@ public class PrincipalPresenter {
 
     private void setTableModels() {
         tmAnaliseLex = new DefaultTableModel(
-                new Object[][] {},
-                new String[] { "ID", "Linha", "Lexema", "Token" });
+                new Object[][]{},
+                new String[]{"ID", "Linha", "Lexema", "Token"}) {
+            @Override
+            public boolean isCellEditable(final int row, final int column) {
+                return false;
+            }
+        };
 
         view.getTblAnaliseLexica().setModel(tmAnaliseLex);
 
         tmSaidas = new DefaultTableModel(
-                new Object[][] {},
-                new String[] { "Erro", "Linha", "Posição", "ID do Token" });
+                new Object[][]{},
+                new String[]{"Erro", "Linha", "Posição", "ID do Token"}) {
+            @Override
+            public boolean isCellEditable(final int row, final int column) {
+                return false;
+            }
+        };
 
         view.getTblSaidas().setModel(tmSaidas);
     }
@@ -214,11 +223,11 @@ public class PrincipalPresenter {
         this.view.getTblAnaliseLexica().setModel(tmAnaliseLex);
 
         for (Token t : tokens) {
-            tmAnaliseLex.addRow(new Object[] {
-                    t.getId(),
-                    t.getLinha().getPosicao(),
-                    t.getSimbolo(),
-                    t.getCategoria()
+            tmAnaliseLex.addRow(new Object[]{
+                t.getId(),
+                t.getLinha().getPosicao(),
+                t.getSimbolo(),
+                t.getCategoria()
             });
         }
 
@@ -233,11 +242,11 @@ public class PrincipalPresenter {
 
         if (!this.erros.getListErro().isEmpty()) {
             for (ErrorCompilacao erro : this.erros.getListErro()) {
-                tmSaidas.addRow(new Object[] {
-                        erro.getMensagemErro(),
-                        erro.getToken().getLinha().getPosicao(),
-                        erro.getToken().getPosicaoInicio(),
-                        erro.getToken().getId()
+                tmSaidas.addRow(new Object[]{
+                    erro.getMensagemErro(),
+                    erro.getToken().getLinha().getPosicao(),
+                    erro.getToken().getPosicaoInicio(),
+                    erro.getToken().getId()
                 });
             }
 
