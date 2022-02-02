@@ -269,7 +269,7 @@ public class PrincipalPresenter {
         if (erroSelecionado != null) {
             this.view.getTxtCodigo().setSelectionStart(erroSelecionado.getPosicaoInicio());
             this.view.getTxtCodigo().setSelectionEnd(erroSelecionado.getPosicaoFim());
-            this.view.getTxtCodigo().setSelectionColor(Color.PINK);
+            this.view.getTxtCodigo().setSelectionColor(Color.RED);
             this.view.getTxtCodigo().requestFocus();
         }
     }
