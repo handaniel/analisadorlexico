@@ -17,6 +17,7 @@ import ufes.cmp.analisadorlexico.model.ErrorCompilacao;
 import ufes.cmp.analisadorlexico.model.Erros;
 import ufes.cmp.analisadorlexico.model.LinhaCodigo;
 import ufes.cmp.analisadorlexico.model.Token;
+import ufes.cmp.analisadorlexico.sintatico.AnalisadorSintatico;
 import ufes.cmp.analisadorlexico.view.PrincipalView;
 
 public class PrincipalPresenter {
@@ -56,15 +57,15 @@ public class PrincipalPresenter {
 
         this.view.getTblSaidas().getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (view.getTblSaidas().getSelectedRow() >= 0) {
-                    ErroSelecionado(view.getTblSaidas().getSelectedRow());
-                } else {
-                    view.getTxtCodigo().setSelectionColor(new Color(176, 197, 227));
-                }
-            }
-        });
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (view.getTblSaidas().getSelectedRow() >= 0) {
+                            ErroSelecionado(view.getTblSaidas().getSelectedRow());
+                        } else {
+                            view.getTxtCodigo().setSelectionColor(new Color(176, 197, 227));
+                        }
+                    }
+                });
 
     }
 
@@ -101,6 +102,8 @@ public class PrincipalPresenter {
 
         this.tokens = this.chainAnaliseLexica(tokens);
         this.preencherTabelaAnaliseLexica(tokens);
+
+        this.erros = new AnalisadorSintatico(view).analiseSintatica(tokens, erros);
 
         this.preencherTabelaErros(tokens);
 
@@ -183,8 +186,8 @@ public class PrincipalPresenter {
 
     private void setTableModels() {
         tmAnaliseLex = new DefaultTableModel(
-                new Object[][]{},
-                new String[]{"ID", "Linha", "Lexema", "Token"}) {
+                new Object[][] {},
+                new String[] { "ID", "Linha", "Lexema", "Token" }) {
             @Override
             public boolean isCellEditable(final int row, final int column) {
                 return false;
@@ -194,8 +197,8 @@ public class PrincipalPresenter {
         view.getTblAnaliseLexica().setModel(tmAnaliseLex);
 
         tmSaidas = new DefaultTableModel(
-                new Object[][]{},
-                new String[]{"Erro", "Linha", "Posição", "ID do Token"}) {
+                new Object[][] {},
+                new String[] { "Erro", "Linha", "Posição", "ID do Token" }) {
             @Override
             public boolean isCellEditable(final int row, final int column) {
                 return false;
@@ -226,11 +229,11 @@ public class PrincipalPresenter {
         this.view.getTblAnaliseLexica().setModel(tmAnaliseLex);
 
         for (Token t : tokens) {
-            tmAnaliseLex.addRow(new Object[]{
-                t.getId(),
-                t.getLinha().getPosicao(),
-                t.getSimbolo(),
-                t.getCategoria()
+            tmAnaliseLex.addRow(new Object[] {
+                    t.getId(),
+                    t.getLinha().getPosicao(),
+                    t.getSimbolo(),
+                    t.getCategoria()
             });
         }
 
@@ -245,11 +248,11 @@ public class PrincipalPresenter {
 
         if (!this.erros.getListErro().isEmpty()) {
             for (ErrorCompilacao erro : this.erros.getListErro()) {
-                tmSaidas.addRow(new Object[]{
-                    erro.getMensagemErro(),
-                    erro.getToken().getLinha().getPosicao(),
-                    erro.getToken().getPosicaoInicio(),
-                    erro.getToken().getId()
+                tmSaidas.addRow(new Object[] {
+                        erro.getMensagemErro(),
+                        erro.getToken().getLinha().getPosicao(),
+                        erro.getToken().getPosicaoInicio(),
+                        erro.getToken().getId()
                 });
             }
 
