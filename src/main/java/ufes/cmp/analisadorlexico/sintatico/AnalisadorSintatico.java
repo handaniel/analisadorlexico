@@ -42,12 +42,9 @@ public class AnalisadorSintatico {
 
         this.analisarToken();
 
-        /*
-         * if (!pilha.isEmpty()) {
-         * this.msgErro("<.>");
-         * }
-         * 
-         */
+        if (!pilha.isEmpty()) {
+            this.msgErro("<.>");
+        }
 
         for (int i = 0; i < this.arvore.getRowCount(); i++) {
             arvore.expandRow(i);
@@ -59,16 +56,23 @@ public class AnalisadorSintatico {
 
     private void analisarToken() {
         try {
-            if (!programa()) {
-                System.out.println(tokens.size());
+            if (programa()) {
+                if ((declaracoes() && declaracoes()) || declaracoes()) {
 
+                } else {
+                    if (!this.tokens.isEmpty()) {
+                        recuperarErro();
+                        analisarToken();
+                    }
+                }
             } else {
-                while (!this.tokens.isEmpty()) {
+                if (!this.tokens.isEmpty()) {
+                    recuperarErro();
                     analisarToken();
                 }
             }
         } catch (Exception e) {
-            recuperarErro();
+
             while (!this.tokens.isEmpty()) {
                 analisarToken();
             }
@@ -185,6 +189,8 @@ public class AnalisadorSintatico {
                 if (idId()) {
                     if (!pontoEVirgula()) {
                         this.msgErro("<;>");
+                    } else {
+                        talvez = true;
                     }
                 } else {
                     this.msgErro("<id>");
@@ -192,6 +198,151 @@ public class AnalisadorSintatico {
             } else {
                 this.msgErro("<program>");
             }
+        }
+
+        return talvez;
+    }
+
+    private boolean declaracoes() throws Exception {
+        boolean talvez = false;
+        if (!this.tokens.isEmpty()) {
+            if (declaracaoVariavel()) {
+                talvez = true;
+            }
+            if (declaracaoConstante()) {
+                talvez = true;
+            }
+        }
+        return talvez;
+    }
+
+    private boolean declaracaoVariavel() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            if (EspVar()) {
+                if (declaracaoVariavel1()) {
+                    talvez = true;
+                }
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean listaIds() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            if (SepVirgula()) {
+                if (idId()) {
+                    if (listaIds()) {
+                        talvez = true;
+                    }
+                } else {
+                    this.msgErro("id");
+                }
+            } else if (doisPontos()) {
+                talvez = true;
+            } else {
+                this.msgErro("<:>");
+            }
+        }
+        return talvez;
+    }
+
+    private boolean declaracaoVariavel1() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            if (idId()) {
+                if (listaIds()) {
+                    if (tipo()) {
+                        if (pontoEVirgula()) {
+                            talvez = true;
+                            if (declaracaoVariavel1()) {
+                            }
+                        } else {
+                            this.msgErro("<;>");
+                        }
+
+                    } else {
+                        this.msgErro("<tipo>");
+                    }
+                } else {
+                    this.msgErro("id");
+                }
+            } else {
+                this.msgErro("id");
+            }
+        }
+        return talvez;
+    }
+
+    private boolean declaracaoConstante() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            if (EspConst()) {
+                if (idId()) {
+                    if (constOpc()) {
+                        talvez = true;
+                    }
+
+                } else {
+                    this.msgErro("id");
+                }
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean constOpc() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            if (tipo()) {
+                if (opAtribuicaoConst()) {
+                    if (idNum() || idLiteral()) {
+                        if (pontoEVirgula()) {
+                            talvez = true;
+                            if (constOpc()) {
+                            }
+                        } else {
+                            this.msgErro("<:>");
+                        }
+                    } else {
+                        this.msgErro("valor");
+                    }
+                } else {
+                    this.msgErro("<=>");
+                }
+            } else {
+                if (opAtribuicaoConst()) {
+                    if (idNum() || idLiteral()) {
+                        if (pontoEVirgula()) {
+                            talvez = true;
+                        } else {
+                            this.msgErro("<:>");
+                        }
+                    } else {
+                        this.msgErro("valor");
+                    }
+                } else {
+                    this.msgErro("<=>");
+                }
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean declaracaoConstante1() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+
         }
 
         return talvez;
@@ -325,6 +476,28 @@ public class AnalisadorSintatico {
         return talvez;
     }
 
+    private boolean doisPontos() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Delimitador_dois_pontos":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    inserirNo(listaNos.get(listaNos.size() - 1), "<delimitadorDoisPontos>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+
+        }
+
+        return talvez;
+    }
+
     private boolean SepAbreParentese() throws Exception {
         boolean talvez = false;
 
@@ -435,6 +608,27 @@ public class AnalisadorSintatico {
         return talvez;
     }
 
+    private boolean opAtribuicaoConst() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "operador_comparacao_igual":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    inserirNo(listaNos.get(listaNos.size() - 1), "<operadorAtribuicaoConst>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
     private boolean opAtribuicao() throws Exception {
         boolean talvez = false;
 
@@ -513,6 +707,52 @@ public class AnalisadorSintatico {
                     this.tokens.remove(0);
                     talvez = true;
                     inserirNo(listaNos.get(listaNos.size() - 1), "<expE>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean begin() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Delimitador_bloco_BEGIN":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    pilha.add(analisado);
+                    inserirNo(listaNos.get(listaNos.size() - 1), "DelimitadorBegin");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean end() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Delimitador_bloco_END":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "DelimitadorEnd");
                     inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
                     listaNos.remove(listaNos.size() - 1);
                     listaNos.remove(listaNos.size() - 1);
