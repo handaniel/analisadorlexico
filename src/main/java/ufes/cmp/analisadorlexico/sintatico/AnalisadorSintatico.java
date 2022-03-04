@@ -251,6 +251,48 @@ public class AnalisadorSintatico {
         return talvez;
     }
 
+    private boolean instrucao() throws Exception {
+        boolean talvez = false;
+
+        return talvez;
+    }
+
+    private boolean inst1() throws Exception {
+        boolean talvez = false;
+
+        if(idId()){
+            if(opAtribuicao()){
+                
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean conteudoBloco() throws Exception {
+        boolean talvez = false;
+
+        return talvez;
+    }
+
+    private boolean bloco() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<bloco>");
+            if (begin()) {
+                conteudoBloco();
+                if (!end()) {
+                    this.msgErro("end");
+                }
+                listaNos.remove(listaNos.size() - 1);
+                talvez = true;
+            }
+        }
+
+        return talvez;
+    }
+
     private boolean declaracaoVariavel1() throws Exception {
         boolean talvez = false;
 
@@ -333,16 +375,6 @@ public class AnalisadorSintatico {
                     this.msgErro("<=>");
                 }
             }
-        }
-
-        return talvez;
-    }
-
-    private boolean declaracaoConstante1() throws Exception {
-        boolean talvez = false;
-
-        if (!this.tokens.isEmpty()) {
-
         }
 
         return talvez;
@@ -753,6 +785,270 @@ public class AnalisadorSintatico {
                         pilha.remove(0);
                     }
                     inserirNo(listaNos.get(listaNos.size() - 1), "DelimitadorEnd");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insIf() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_IF":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoIf");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insThen() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_THEN":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoTHEN");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insWhile() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_while":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoWhile");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insUntil() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_until":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoUntil");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insRepeat() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_repeat":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoRepeat");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insProcedure() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_procedure":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoProcedure");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insFunction() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_function":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoFunction");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insElse() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_ELSE":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoElse");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insDo() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_do":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoDo");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insContinue() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_CONTINUE":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoContinue");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean insBreak() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Instrucao_BREAK":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    if (!pilha.isEmpty()) {
+                        pilha.remove(0);
+                    }
+                    inserirNo(listaNos.get(listaNos.size() - 1), "InstrucaoBreak");
                     inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
                     listaNos.remove(listaNos.size() - 1);
                     listaNos.remove(listaNos.size() - 1);
