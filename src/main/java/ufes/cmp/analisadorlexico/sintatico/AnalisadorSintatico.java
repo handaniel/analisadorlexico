@@ -416,6 +416,12 @@ public class AnalisadorSintatico {
         return talvez;
     }
 
+    private boolean variavel() throws Exception{
+        boolean talvez = false;
+
+        return talvez;
+    }
+
     private boolean declaracaoConstante() throws Exception {
         boolean talvez = false;
 
