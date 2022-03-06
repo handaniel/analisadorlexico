@@ -172,6 +172,9 @@ public class PrincipalPresenter {
         codigo = codigo.replaceAll("\\<", " \\< ");
         codigo = codigo.replaceAll("\\>", " \\> ");
 
+        codigo = codigo.replaceAll("\\[", " \\[ ");
+        codigo = codigo.replaceAll("\\]", " \\] ");
+
         codigo = codigo.replaceAll("\\>  =", " >= ");
         codigo = codigo.replaceAll("\\<  =", " <= ");
         codigo = codigo.replaceAll("\\:  \\= ", " := ");
