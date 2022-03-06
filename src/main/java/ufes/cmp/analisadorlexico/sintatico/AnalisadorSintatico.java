@@ -57,7 +57,7 @@ public class AnalisadorSintatico {
     private void analisarToken() {
         try {
             if (programa()) {
-                if ((declaracoes() && declaracoes()) || declaracoes()) {
+                if (declaracoes()) {
 
                 } else {
                     if (!this.tokens.isEmpty()) {
@@ -206,12 +206,9 @@ public class AnalisadorSintatico {
     private boolean declaracoes() throws Exception {
         boolean talvez = false;
         if (!this.tokens.isEmpty()) {
-            if (declaracaoVariavel()) {
-                talvez = true;
-            }
-            if (declaracaoConstante()) {
-                talvez = true;
-            }
+            declaracaoVariavel();
+            declaracaoConstante();
+
         }
         return talvez;
     }
@@ -224,9 +221,102 @@ public class AnalisadorSintatico {
                 if (declaracaoVariavel1()) {
                     talvez = true;
                 }
+                declaracaoConstante();
             }
         }
 
+        return talvez;
+    }
+
+    private boolean declaracaoProcedimento() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+
+        }
+
+        return talvez;
+    }
+
+    private boolean declProc() throws Exception {
+        boolean talvez = false;
+        if (!this.tokens.isEmpty()) {
+            if (decProcedure() || decFunction()) {
+                talvez = true;
+                declProc();
+            }
+        }
+        return talvez;
+    }
+
+    private boolean decProcedure() throws Exception {
+        boolean talvez = false;
+        if (!this.tokens.isEmpty()) {
+            if (insProcedure()) {
+                if (idId()) {
+                    if (SepAbreParentese()) {
+                        declaracaoVariavel1();
+                        if (SepFechaParentese()) {
+                            if (pontoEVirgula()) {
+                                declaracaoVariavel();
+                                if (bloco()) {
+                                    talvez = true;
+                                    declaracaoProcedimento();
+                                }
+                            } else {
+                                this.msgErro("<;>");
+                            }
+                        } else {
+                            this.msgErro("<)>");
+                        }
+                    } else {
+                        this.msgErro("<(>");
+                    }
+                } else {
+                    this.msgErro("id");
+                }
+            }
+        }
+        return talvez;
+    }
+
+    private boolean decFunction() throws Exception {
+        boolean talvez = false;
+        if (!this.tokens.isEmpty()) {
+            if (insFunction()) {
+                if (idId()) {
+                    if (SepAbreParentese()) {
+                        declaracaoVariavel1();
+                        if (SepFechaParentese()) {
+                            if (doisPontos()) {
+                                if (tipo()) {
+                                    if (pontoEVirgula()) {
+                                        declaracaoVariavel();
+                                        if (bloco()) {
+                                            talvez = true;
+                                            declaracaoProcedimento();
+                                        }
+                                    } else {
+                                        this.msgErro("<;>");
+                                    }
+                                } else {
+                                    this.msgErro("tipo");
+                                }
+                            } else {
+                                this.msgErro("<:>");
+                            }
+                        } else {
+                            this.msgErro("<(>");
+                        }
+
+                    } else {
+                        this.msgErro("<(>");
+                    }
+                } else {
+                    this.msgErro("id");
+                }
+            }
+        }
         return talvez;
     }
 
@@ -260,23 +350,27 @@ public class AnalisadorSintatico {
     private boolean inst1() throws Exception {
         boolean talvez = false;
 
-        if(idId()){
-            if(opAtribuicao()){
-                
+        if (idId()) {
+            if (opAtribuicao()) {
+
             }
         }
 
         return talvez;
     }
 
-    private boolean conteudoBloco() throws Exception {
-        boolean talvez = false;
+    private void conteudoBloco() throws Exception {
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<conjuntoInstrucoes>");
+            if (instrucao()) {
+                conteudoBloco();
+            }
+            listaNos.remove(listaNos.size() - 1);
 
-        return talvez;
+        }
     }
 
     private boolean bloco() throws Exception {
-        boolean talvez = false;
 
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<bloco>");
@@ -286,11 +380,14 @@ public class AnalisadorSintatico {
                     this.msgErro("end");
                 }
                 listaNos.remove(listaNos.size() - 1);
-                talvez = true;
+                return true;
+            } else if (!pontoEVirgula()) {
+                this.msgErro("begin ou <;>");
             }
+            listaNos.remove(listaNos.size() - 1);
         }
 
-        return talvez;
+        return false;
     }
 
     private boolean declaracaoVariavel1() throws Exception {
@@ -302,20 +399,18 @@ public class AnalisadorSintatico {
                     if (tipo()) {
                         if (pontoEVirgula()) {
                             talvez = true;
-                            if (declaracaoVariavel1()) {
+                            if (!declaracaoConstante()) {
+                                declaracaoVariavel1();
                             }
                         } else {
                             this.msgErro("<;>");
                         }
-
                     } else {
                         this.msgErro("<tipo>");
                     }
                 } else {
                     this.msgErro("id");
                 }
-            } else {
-                this.msgErro("id");
             }
         }
         return talvez;
@@ -326,14 +421,25 @@ public class AnalisadorSintatico {
 
         if (!this.tokens.isEmpty()) {
             if (EspConst()) {
-                if (idId()) {
-                    if (constOpc()) {
-                        talvez = true;
-                    }
-
-                } else {
-                    this.msgErro("id");
+                if (declaracaoConstante1()) {
+                    talvez = true;
                 }
+            }
+        }
+
+        return talvez;
+    }
+
+    private boolean declaracaoConstante1() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            if (idId()) {
+                if (constOpc()) {
+                    talvez = true;
+                }
+            } else {
+                this.msgErro("id");
             }
         }
 
@@ -344,21 +450,24 @@ public class AnalisadorSintatico {
         boolean talvez = false;
 
         if (!this.tokens.isEmpty()) {
-            if (tipo()) {
-                if (opAtribuicaoConst()) {
-                    if (idNum() || idLiteral()) {
-                        if (pontoEVirgula()) {
-                            talvez = true;
-                            if (constOpc()) {
+            if (doisPontos()) {
+                if (tipo()) {
+                    if (opAtribuicaoConst()) {
+                        if (idNum() || idLiteral() || idDigito()) {
+                            if (pontoEVirgula()) {
+                                talvez = true;
+                                constOpc();
+                            } else {
+                                this.msgErro("<;>");
                             }
                         } else {
-                            this.msgErro("<:>");
+                            this.msgErro("valor");
                         }
                     } else {
-                        this.msgErro("valor");
+                        this.msgErro("<=>");
                     }
                 } else {
-                    this.msgErro("<=>");
+                    this.msgErro("tipo");
                 }
             } else {
                 if (opAtribuicaoConst()) {
