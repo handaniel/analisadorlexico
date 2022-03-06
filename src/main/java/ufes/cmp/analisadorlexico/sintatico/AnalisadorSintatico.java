@@ -325,7 +325,7 @@ public class AnalisadorSintatico {
 
         if (!this.tokens.isEmpty()) {
             if (SepVirgula()) {
-                if (idId()) {
+                if (variavel()) {
                     if (listaIds()) {
                         talvez = true;
                     }
@@ -394,7 +394,7 @@ public class AnalisadorSintatico {
         boolean talvez = false;
 
         if (!this.tokens.isEmpty()) {
-            if (idId()) {
+            if (variavel()) {
                 if (listaIds()) {
                     if (tipo()) {
                         if (pontoEVirgula()) {
@@ -416,9 +416,25 @@ public class AnalisadorSintatico {
         return talvez;
     }
 
-    private boolean variavel() throws Exception{
+    private boolean variavel() throws Exception {
         boolean talvez = false;
-
+        if (!this.tokens.isEmpty()) {
+            if (idId()) {
+                talvez = true;
+                if (SepAbreColchete()) {
+                    talvez = false;
+                    if (idDigito()) {
+                        if (SepFechaColchete()) {
+                            talvez = true;
+                        } else {
+                            this.msgErro("<]>");
+                        }
+                    }
+                }
+            } else {
+                this.msgErro("id");
+            }
+        }
         return talvez;
     }
 
@@ -656,6 +672,50 @@ public class AnalisadorSintatico {
                     this.tokens.remove(0);
                     talvez = true;
                     inserirNo(listaNos.get(listaNos.size() - 1), "<SepAbreParentese>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+
+        }
+
+        return talvez;
+    }
+
+    private boolean SepAbreColchete() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    inserirNo(listaNos.get(listaNos.size() - 1), "<SepAbreColchete>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+
+        }
+
+        return talvez;
+    }
+
+    private boolean SepFechaColchete() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    inserirNo(listaNos.get(listaNos.size() - 1), "<SepAbreColchete>");
                     inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
                     listaNos.remove(listaNos.size() - 1);
                     listaNos.remove(listaNos.size() - 1);
