@@ -22,10 +22,10 @@ public class HandlerAbreParenteses extends AbstractHandler {
 
     @Override
     public String recuperarErro(Token token) {
-        if(StringUtils.similarity(token.getSimbolo(), "(") >= 0.8) {
+        if (StringUtils.similarity(token.getSimbolo(), "(") >= 0.8) {
             return "Esse token pode ser substituido por: Separador_Abre_Parenteses";
-        } else if(StringUtils.similarity(token.getSimbolo(), "(") > 0.5) {
-            return "Esse token tem similaridade com: Separador_Abre_Parenteses; " + next.recuperarErro(token); 
+        } else if (StringUtils.similarity(token.getSimbolo(), "(") > 0.5) {
+            return "Esse token tem similaridade com: Separador_Abre_Parenteses; " + next.recuperarErro(token);
         }
 
         return next.recuperarErro(token);

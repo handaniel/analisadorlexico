@@ -1242,4 +1242,202 @@ public class AnalisadorSintatico {
             this.handlerErro.addErro(null, "Erro sintático: Esperado " + simboloEsperado);
         }
     }
+
+    private void parametrosIF() throws Exception {
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesIF>");
+
+            if (SepAbreParentese()) {
+                parametrosIF();
+
+                if (!SepFechaParentese()) {
+                    this.msgErro("<)>");
+                }
+            } else if (!opExpressaoBinaria()) {
+                if (operando()) {
+                    opExpressaoBinaria();
+                } else {
+                    this.msgErro("<exprUnary>, <operador> ou <(>");
+                }
+            }
+            listaNos.remove(listaNos.size() - 1);
+        }
+    }
+
+    private void continuaInstrucaoIF() throws Exception {
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesIF>");
+
+            if (!programa()) {
+                if (!instrucao()) {
+                    if (bloco()) {
+                        continuaBlocoInstrucaoIF();
+                    } else {
+                        this.msgErro("<programa>, <bloco> ou instrucao");
+                    }
+                } else {
+                    continuaBlocoInstrucaoIF();
+                }
+            } else {
+                continuaBlocoInstrucaoIF();
+            }
+
+            listaNos.remove(listaNos.size() - 1);
+        }
+    }
+
+    private void continuaBlocoInstrucaoIF() throws Exception {
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesIF>");
+
+            if (insElse()) {
+                continuaInstrucaoElse();
+            }
+
+            listaNos.remove(listaNos.size() - 1);
+        }
+    }
+
+    private void continuaInstrucaoElse() throws Exception {
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesELSE>");
+
+            if (!instrucao()) {
+                if (!programa()) {
+                    if (!bloco()) {
+                        this.msgErro("<programa>, <bloco>, <instrucao>");
+                    }
+                }
+            }
+
+            listaNos.remove(listaNos.size() - 1);
+        }
+    }
+
+    
+
+    private boolean operando() throws Exception {
+        var retorno = false;
+
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<primary>");
+
+            if (idNum()) {
+                retorno = true;
+            } else if (idLiteral()) {
+                retorno = true;
+            } else {
+                if (idId()) {
+                    retorno = true;
+                    continuaOperandoId();
+                }
+            }
+            listaNos.remove(listaNos.size() - 1);
+        }
+
+        return retorno;
+    }
+
+    private void continuaOperandoId() throws Exception {
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<primaryID>");
+
+            if (SepAbreColchete()) {
+                if (idNum()) {
+                    if (!fechaColchete()) {
+                        this.msgErro("<]>");
+                    }
+                } else {
+                    this.msgErro("<NUM>");
+                }
+            } else if (SepAbreParentese()) {
+                listaDeExpressao();
+
+                if (!SepFechaParentese()) {
+                    this.msgErro("<)>");
+                }
+            }
+            listaNos.remove(listaNos.size() - 1);
+        }
+    }
+
+    private boolean listaDeExpressao() throws Exception {
+        boolean retorno = false;
+
+        inserirNo(listaNos.get(listaNos.size() - 1), "<exprList>");
+
+        if (SepAbreParentese()) {
+            listaDeExpressao();
+            retorno = true;
+
+            if (!SepFechaParentese()) {
+                this.msgErro("<)>");
+            }
+        } else if (operando()) {
+            opExpressaoBinaria();
+            continuaListaDeExpressao();
+
+            retorno = true;
+        }
+
+        listaNos.remove(listaNos.size() - 1);
+
+        return retorno;
+    }
+
+    private void continuaListaDeExpressao() throws Exception {
+        if (!this.tokens.isEmpty()) {
+            inserirNo(listaNos.get(listaNos.size() - 1), "<exprListTail>");
+
+            if (SepVirgula()) {
+                if (!listaDeExpressao()) {
+                    this.msgErro("<exprUnary>, <primary>");
+                }
+            }
+
+            listaNos.remove(listaNos.size() - 1);
+        }
+    }
+
+    private boolean SepAbreColchete() {
+        boolean retorno = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "instrucao_abre_colchete":
+                    this.tokens.remove(0);
+                    retorno = true;
+                    inserirNo(listaNos.get(listaNos.size() - 1), "<instrucaoAbreColchete>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return retorno;
+    }
+
+    private boolean fechaColchete() {
+        var retorno = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "instrucao_fecha_colchete":
+                    this.tokens.remove(0);
+                    retorno = true;
+                    inserirNo(listaNos.get(listaNos.size() - 1), "<instrucaoFechaColchete>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+        }
+
+        return retorno;
+    }
 }
