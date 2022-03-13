@@ -43,7 +43,8 @@ public class AnalisadorSintatico {
         this.analisarToken();
 
         if (!pilha.isEmpty()) {
-            //this.msgErro("<.>");
+            System.out.println(pilha.size());
+            this.msgErro("<.>");
         }
 
         for (int i = 0; i < this.arvore.getRowCount(); i++) {
@@ -72,11 +73,6 @@ public class AnalisadorSintatico {
                                 recuperarErro();
                                 analisarToken();
                             }
-                        }
-                    } else {
-                        if (!this.tokens.isEmpty()) {
-                            recuperarErro();
-                            analisarToken();
                         }
                     }
                 } else {
@@ -692,7 +688,7 @@ public class AnalisadorSintatico {
 
     private boolean fator() throws Exception {
         boolean talvez = false;
-        if (variavel() || idLiteral() || idNum() || idDigito() || expr()) {
+        if (variavel() || idLiteral() || idNum() || idDigito()) {
             talvez = true;
         }
 
@@ -975,7 +971,7 @@ public class AnalisadorSintatico {
                 listaNos.remove(listaNos.size() - 1);
                 return true;
             } else if (!pontoEVirgula()) {
-                this.msgErro("begin ou <;>");
+                this.msgErro("begin ou <;> ");
             }
             listaNos.remove(listaNos.size() - 1);
         }
@@ -1570,7 +1566,9 @@ public class AnalisadorSintatico {
                     this.tokens.remove(0);
                     talvez = true;
                     if (!pilha.isEmpty()) {
-                        pilha.remove(0);
+                        if (pilha.get(0).getCategoria().equals("Delimitador_bloco_BEGIN")) {
+                            pilha.remove(0);
+                        }
                     }
                     inserirNo(listaNos.get(listaNos.size() - 1), "DelimitadorEnd");
                     inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
