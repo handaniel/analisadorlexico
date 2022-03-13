@@ -9,7 +9,6 @@ import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 import ufes.cmp.analisadorlexico.model.Erros;
 import ufes.cmp.analisadorlexico.model.Token;
@@ -44,7 +43,7 @@ public class AnalisadorSintatico {
         this.analisarToken();
 
         if (!pilha.isEmpty()) {
-            this.msgErro("<.>");
+            //this.msgErro("<.>");
         }
 
         for (int i = 0; i < this.arvore.getRowCount(); i++) {
@@ -62,7 +61,12 @@ public class AnalisadorSintatico {
                 if (begin()) {
                     if (instrucoes()) {
                         if (end()) {
-                            // acaba
+                            if (ponto()) {
+                                //acaba
+                            } else {
+                                recuperarErro();
+                                analisarToken();
+                            }
                         } else {
                             if (!this.tokens.isEmpty()) {
                                 recuperarErro();
@@ -696,6 +700,7 @@ public class AnalisadorSintatico {
     }
 
     private void conteudoBloco() throws Exception {
+        System.out.println("ué");
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<conjuntoInstrucoes>");
             if (instrucoes()) {
@@ -1011,7 +1016,7 @@ public class AnalisadorSintatico {
                 talvez = true;
                 if (SepAbreColchete()) {
                     talvez = false;
-                    if (expr()) {
+                    if (idDigito()) {
                         if (SepFechaColchete()) {
                             talvez = true;
                         } else {
@@ -1019,8 +1024,6 @@ public class AnalisadorSintatico {
                         }
                     }
                 }
-            } else {
-                this.msgErro("id");
             }
         }
         return talvez;
@@ -1216,6 +1219,28 @@ public class AnalisadorSintatico {
                     this.tokens.remove(0);
                     talvez = true;
                     inserirNo(listaNos.get(listaNos.size() - 1), "<delimitadorPontoEVirgula>");
+                    inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
+                    listaNos.remove(listaNos.size() - 1);
+                    listaNos.remove(listaNos.size() - 1);
+                    break;
+            }
+
+        }
+
+        return talvez;
+    }
+
+    private boolean ponto() throws Exception {
+        boolean talvez = false;
+
+        if (!this.tokens.isEmpty()) {
+            analisado = this.tokens.get(0);
+
+            switch (analisado.getCategoria()) {
+                case "Delimitador_instrucoes_ponto":
+                    this.tokens.remove(0);
+                    talvez = true;
+                    inserirNo(listaNos.get(listaNos.size() - 1), "<delimitadorPonto>");
                     inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
                     listaNos.remove(listaNos.size() - 1);
                     listaNos.remove(listaNos.size() - 1);
