@@ -43,9 +43,6 @@ public class AnalisadorSintatico {
         this.analisarToken();
 
         if (!pilha.isEmpty()) {
-            for (Token t : pilha) {
-                System.out.println(t.getSimbolo());
-            }
             this.msgErro("end");
         }
 
