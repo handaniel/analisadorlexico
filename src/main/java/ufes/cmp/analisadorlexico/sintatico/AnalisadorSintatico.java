@@ -43,8 +43,10 @@ public class AnalisadorSintatico {
         this.analisarToken();
 
         if (!pilha.isEmpty()) {
-            System.out.println(pilha.size());
-            this.msgErro("<.>");
+            for (Token t : pilha) {
+                System.out.println(t.getSimbolo());
+            }
+            this.msgErro("end");
         }
 
         for (int i = 0; i < this.arvore.getRowCount(); i++) {
@@ -59,21 +61,10 @@ public class AnalisadorSintatico {
         try {
             if (programa()) {
                 declaracoes();
-                if (begin()) {
-                    if (instrucoes()) {
-                        if (end()) {
-                            if (ponto()) {
-                                //acaba
-                            } else {
-                                recuperarErro();
-                                analisarToken();
-                            }
-                        } else {
-                            if (!this.tokens.isEmpty()) {
-                                recuperarErro();
-                                analisarToken();
-                            }
-                        }
+                if (instrucoes()) {
+                    if (!this.tokens.isEmpty()) {
+                        recuperarErro();
+                        analisarToken();
                     }
                 } else {
                     if (!this.tokens.isEmpty()) {
@@ -81,15 +72,15 @@ public class AnalisadorSintatico {
                         analisarToken();
                     }
                 }
-
             } else {
                 if (!this.tokens.isEmpty()) {
                     recuperarErro();
                     analisarToken();
                 }
             }
-        } catch (Exception e) {
 
+        } catch (Exception e) {
+            recuperarErro();
             while (!this.tokens.isEmpty()) {
                 analisarToken();
             }
@@ -212,8 +203,6 @@ public class AnalisadorSintatico {
                 } else {
                     this.msgErro("<id>");
                 }
-            } else {
-                this.msgErro("<program>");
             }
         }
 
@@ -696,7 +685,6 @@ public class AnalisadorSintatico {
     }
 
     private void conteudoBloco() throws Exception {
-        System.out.println("ué");
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<conjuntoInstrucoes>");
             if (instrucoes()) {
@@ -970,8 +958,6 @@ public class AnalisadorSintatico {
                 }
                 listaNos.remove(listaNos.size() - 1);
                 return true;
-            } else if (!pontoEVirgula()) {
-                this.msgErro("begin ou <;> ");
             }
             listaNos.remove(listaNos.size() - 1);
         }
@@ -1566,9 +1552,9 @@ public class AnalisadorSintatico {
                     this.tokens.remove(0);
                     talvez = true;
                     if (!pilha.isEmpty()) {
-                        if (pilha.get(0).getCategoria().equals("Delimitador_bloco_BEGIN")) {
-                            pilha.remove(0);
-                        }
+                        pilha.remove(0);
+                    } else {
+                        this.msgErro("begin");
                     }
                     inserirNo(listaNos.get(listaNos.size() - 1), "DelimitadorEnd");
                     inserirNo(listaNos.get(listaNos.size() - 1), analisado.getSimbolo());
