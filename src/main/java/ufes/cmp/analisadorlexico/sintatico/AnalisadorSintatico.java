@@ -1055,8 +1055,6 @@ public class AnalisadorSintatico {
                         } else {
                             this.msgErro("valor");
                         }
-                    } else {
-                        this.msgErro("<=>");
                     }
                 } else {
                     this.msgErro("tipo");
@@ -1072,9 +1070,7 @@ public class AnalisadorSintatico {
                     } else {
                         this.msgErro("valor");
                     }
-                } else {
-                    this.msgErro("<=>");
-                }
+                } 
             }
         }
 
