@@ -1,5 +1,5 @@
 ### Trabalho 1 de Compiladores 2021/2
-#### Um Analisador Léxico para um dialeto de linguagem Pascal
+#### Um Compilador para um dialeto de linguagem Pascal
 
 Linguagem Pasceiton   
 

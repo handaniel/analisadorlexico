@@ -115,7 +115,7 @@ public class AnalisadorSintatico {
         boolean talvez = false;
 
         switch (token.getCategoria()) {
-            case "sla":
+            case "":
                 talvez = true;
                 break;
         }
@@ -1070,7 +1070,7 @@ public class AnalisadorSintatico {
                     } else {
                         this.msgErro("valor");
                     }
-                } 
+                }
             }
         }
 
