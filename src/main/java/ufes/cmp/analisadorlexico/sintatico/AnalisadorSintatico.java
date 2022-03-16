@@ -15,54 +15,67 @@ import ufes.cmp.analisadorlexico.model.Token;
 import ufes.cmp.analisadorlexico.view.PrincipalView;
 
 public class AnalisadorSintatico {
-
+    
     private PrincipalView view;
     private List<Token> original;
     private List<Token> tokens;
     private JTree arvore;
     private ArrayList<DefaultMutableTreeNode> listaNos;
     private Erros handlerErro;
-
+    
     private Token analisado;
     private ArrayList<Token> pilha;
-
+    
     public AnalisadorSintatico(PrincipalView view) {
         this.view = view;
         listaNos = new ArrayList<>();
     }
-
+    
     public Erros analiseSintatica(List<Token> tokens, Erros erros) {
         this.tokens = new ArrayList<>();
         this.tokens.addAll(tokens);
         this.original = tokens;
         this.handlerErro = erros;
-
+        
         criarArvore();
         this.pilha = new ArrayList<>();
-
+        
         this.analisarToken();
-
+        
         if (!pilha.isEmpty()) {
             this.msgErro("end");
         }
-
+        
         for (int i = 0; i < this.arvore.getRowCount(); i++) {
             arvore.expandRow(i);
             arvore.setShowsRootHandles(true);
         }
-
+        
         return this.handlerErro;
     }
-
+    
     private void analisarToken() {
         try {
             if (programa()) {
                 declaracoes();
-                if (instrucoes()) {
-                    if (!this.tokens.isEmpty()) {
-                        recuperarErro();
-                        analisarToken();
+                if (begin()) {
+                    if (instrucoes()) {
+                        //Entra no bloco e verifica as instruções
+                        //se a lista de tokens não estiver vazia, continua análise
+                        if (!this.tokens.isEmpty()) {
+                            analisarToken();
+                        }
                     }
+                    if (end()) {
+                        if (ponto()) {
+                            //acaba
+                        } else {
+                            this.msgErro("<.>");
+                        }
+                    } else {
+                        this.msgErro("end");
+                    }
+                    
                 } else {
                     if (!this.tokens.isEmpty()) {
                         recuperarErro();
@@ -75,19 +88,19 @@ public class AnalisadorSintatico {
                     analisarToken();
                 }
             }
-
+            
         } catch (Exception e) {
             recuperarErro();
             while (!this.tokens.isEmpty()) {
                 analisarToken();
             }
         }
-
+        
         if (!this.tokens.isEmpty()) {
             analisarToken();
         }
     }
-
+    
     private void recuperarErro() {
         if (!this.tokens.isEmpty()) {
             Token temp;
@@ -106,68 +119,68 @@ public class AnalisadorSintatico {
                 }
             }
         }
-
+        
         inserirNo(listaNos.get(listaNos.size() - 1), "<ERRO>");
         listaNos.remove(listaNos.size() - 1);
     }
-
+    
     private boolean sincronizadorToken(Token token) {
         boolean talvez = false;
-
+        
         switch (token.getCategoria()) {
             case "":
                 talvez = true;
                 break;
         }
-
+        
         return talvez;
     }
-
+    
     private void criarArvore() {
         DefaultMutableTreeNode no = new DefaultMutableTreeNode("Programa");
         DefaultTreeModel modelo = new DefaultTreeModel(no);
-
+        
         LookAndFeel anterior = UIManager.getLookAndFeel();
-
+        
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
             arvore = new JTree(modelo);
             UIManager.setLookAndFeel(anterior);
             arvore.putClientProperty("JTree.lineStyle", "Angled");
-
+            
         } catch (Exception e) {
             throw new RuntimeException("Erro ao criar arvore");
         }
-
+        
         listaNos.add(no);
-
+        
         JScrollPane blocoArvore = new JScrollPane(arvore);
         blocoArvore.setViewportView(arvore);
-
+        
         if (this.view.getTbpResultados().getTabCount() <= 1) {
             this.view.getTbpResultados().add("Arvore Sintática", blocoArvore);
         } else {
             this.view.getTbpResultados().removeTabAt(1);
             this.view.getTbpResultados().add("Arvore Sintática", blocoArvore);
         }
-
+        
         arvore.setShowsRootHandles(true);
-
+        
     }
-
+    
     private DefaultMutableTreeNode inserirNo(DefaultMutableTreeNode pai, String filho) {
         DefaultMutableTreeNode novo = new DefaultMutableTreeNode(filho);
         pai.add(novo);
         listaNos.add(novo);
         return novo;
     }
-
+    
     private boolean tipo() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Especificador_CHAR":
                 case "Especificador_INTEGER":
@@ -182,13 +195,13 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean programa() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (EspProgram()) {
                 if (idId()) {
@@ -202,10 +215,10 @@ public class AnalisadorSintatico {
                 }
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean declaracoes() throws Exception {
         boolean talvez = false;
         if (!this.tokens.isEmpty()) {
@@ -215,10 +228,10 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean declaracaoVariavel() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (EspVar()) {
                 if (declaracaoVariavel1()) {
@@ -227,22 +240,22 @@ public class AnalisadorSintatico {
                 declaracaoConstante();
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean declaracaoProcedimento() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (declProc()) {
                 talvez = true;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean declProc() throws Exception {
         boolean talvez = false;
         if (!this.tokens.isEmpty()) {
@@ -253,7 +266,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean decProcedure() throws Exception {
         boolean talvez = false;
         if (!this.tokens.isEmpty()) {
@@ -284,7 +297,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean decFunction() throws Exception {
         boolean talvez = false;
         if (!this.tokens.isEmpty()) {
@@ -313,7 +326,7 @@ public class AnalisadorSintatico {
                         } else {
                             this.msgErro("<(>");
                         }
-
+                        
                     } else {
                         this.msgErro("<(>");
                     }
@@ -324,10 +337,10 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean listaIds() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (SepVirgula()) {
                 if (variavel()) {
@@ -345,7 +358,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean instrucoes() throws Exception {
         boolean talvez = false;
         if (inst()) {
@@ -354,7 +367,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean inst() throws Exception {
         boolean talvez = false;
         if (!this.tokens.isEmpty()) {
@@ -396,10 +409,10 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean inst1() throws Exception {
         boolean talvez = false;
-
+        
         if (variavel()) {
             if (opAtribuicao()) {
                 if (expr()) {
@@ -413,10 +426,10 @@ public class AnalisadorSintatico {
                 }
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean inst2() throws Exception {
         boolean talvez = false;
         if (idId()) {
@@ -437,10 +450,10 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean inst3() throws Exception {
         boolean talvez = false;
-
+        
         if (insIf()) {
             if (expr()) {
                 if (insThen()) {
@@ -454,13 +467,13 @@ public class AnalisadorSintatico {
                 this.msgErro("expr");
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean inst4() throws Exception {
         boolean talvez = false;
-
+        
         if (insIf()) {
             if (expr()) {
                 if (insThen()) {
@@ -484,13 +497,13 @@ public class AnalisadorSintatico {
                 this.msgErro("expr");
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean inst5() throws Exception {
         boolean talvez = false;
-
+        
         if (insWhile()) {
             if (expr()) {
                 if (insDo()) {
@@ -506,10 +519,10 @@ public class AnalisadorSintatico {
                 this.msgErro("expr");
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean inst6() throws Exception {
         boolean talvez = false;
         if (insRepeat()) {
@@ -531,10 +544,10 @@ public class AnalisadorSintatico {
                 this.msgErro("inst");
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean inst7() throws Exception {
         boolean talvez = false;
         if (insBreak()) {
@@ -544,10 +557,10 @@ public class AnalisadorSintatico {
                 this.msgErro("<;>");
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean inst8() throws Exception {
         boolean talvez = false;
         if (insContinue()) {
@@ -557,10 +570,10 @@ public class AnalisadorSintatico {
                 this.msgErro("<;>");
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean parametros2() throws Exception {
         boolean talvez = true;
         if (expr()) {
@@ -576,7 +589,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean exprOp() throws Exception {
         boolean talvez = false;
         if (termo()) {
@@ -585,7 +598,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean expr() throws Exception {
         boolean talvez = false;
         if (exprComp()) {
@@ -594,7 +607,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean expr2() throws Exception {
         boolean talvez = false;
         if ((sinalOu() && exprComp()) || (sinalE() && exprComp())) {
@@ -603,7 +616,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean exprOp2() throws Exception {
         boolean talvez = false;
         if (sinalMais() && termo()) {
@@ -615,7 +628,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean exprComp() throws Exception {
         boolean talvez = false;
         if (exprOp()) {
@@ -624,7 +637,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean exprComp2() throws Exception {
         boolean talvez = false;
         if ((sinalIgual() && exprOp())
@@ -638,7 +651,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean termo() throws Exception {
         boolean talvez = false;
         if (unario()) {
@@ -647,7 +660,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean termo2() throws Exception {
         boolean talvez = false;
         if (sinalMult() && termo()) {
@@ -657,10 +670,10 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean unario() throws Exception {
         boolean talvez = false;
-
+        
         if (sinalMais() && fator()) {
             talvez = true;
         } else if (sinalMais() && fator()) {
@@ -668,19 +681,19 @@ public class AnalisadorSintatico {
         } else if (fator()) {
             talvez = true;
         }
-
+        
         return talvez;
     }
-
+    
     private boolean fator() throws Exception {
         boolean talvez = false;
         if (variavel() || idLiteral() || idNum() || idDigito()) {
             talvez = true;
         }
-
+        
         return talvez;
     }
-
+    
     private void conteudoBloco() throws Exception {
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<conjuntoInstrucoes>");
@@ -688,16 +701,16 @@ public class AnalisadorSintatico {
                 conteudoBloco();
             }
             listaNos.remove(listaNos.size() - 1);
-
+            
         }
     }
-
+    
     private boolean sinalE() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_logico_E":
                     this.tokens.remove(0);
@@ -709,16 +722,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalOu() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_logico_OU":
                     this.tokens.remove(0);
@@ -730,16 +743,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalIgual() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_comparacao_igual":
                     this.tokens.remove(0);
@@ -751,16 +764,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalDiferente() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_comparacao_diferente":
                     this.tokens.remove(0);
@@ -772,16 +785,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalMaior() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_comparacao_maior":
                     this.tokens.remove(0);
@@ -793,16 +806,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalMaiorIgual() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_comparacao_maior_igual":
                     this.tokens.remove(0);
@@ -814,16 +827,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalMenor() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_comparacao_menor":
                     this.tokens.remove(0);
@@ -835,16 +848,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalMenorIgual() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_comparacao_menor_igual":
                     this.tokens.remove(0);
@@ -856,16 +869,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalMais() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_aritmetico_soma":
                     this.tokens.remove(0);
@@ -877,16 +890,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalMenos() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_aritmetico_subtracao":
                     this.tokens.remove(0);
@@ -898,16 +911,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalMult() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_aritmetico_multiplicacao":
                     this.tokens.remove(0);
@@ -919,16 +932,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean sinalDiv() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_aritmetico_divisao_Real":
                     this.tokens.remove(0);
@@ -940,12 +953,12 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean bloco() throws Exception {
-
+        
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<bloco>");
             if (begin()) {
@@ -958,13 +971,13 @@ public class AnalisadorSintatico {
             }
             listaNos.remove(listaNos.size() - 1);
         }
-
+        
         return false;
     }
-
+    
     private boolean declaracaoVariavel1() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (variavel()) {
                 if (listaIds()) {
@@ -987,7 +1000,7 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean variavel() throws Exception {
         boolean talvez = false;
         if (!this.tokens.isEmpty()) {
@@ -1007,10 +1020,10 @@ public class AnalisadorSintatico {
         }
         return talvez;
     }
-
+    
     private boolean declaracaoConstante() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (EspConst()) {
                 if (declaracaoConstante1()) {
@@ -1018,13 +1031,13 @@ public class AnalisadorSintatico {
                 }
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean declaracaoConstante1() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (idId()) {
                 if (constOpc()) {
@@ -1034,13 +1047,13 @@ public class AnalisadorSintatico {
                 this.msgErro("id");
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean constOpc() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             if (doisPontos()) {
                 if (tipo()) {
@@ -1073,16 +1086,16 @@ public class AnalisadorSintatico {
                 }
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean idId() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "ID":
                     this.tokens.remove(0);
@@ -1094,16 +1107,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean idLiteral() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "identificador_literal":
                     this.tokens.remove(0);
@@ -1115,16 +1128,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean idNum() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "identificador_num":
                     this.tokens.remove(0);
@@ -1136,16 +1149,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean idDigito() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "digito":
                     this.tokens.remove(0);
@@ -1157,16 +1170,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean EspProgram() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Especificador_PROGRAM":
                     this.tokens.remove(0);
@@ -1177,18 +1190,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean pontoEVirgula() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Delimitador_instrucoes_pontoevirgula":
                     this.tokens.remove(0);
@@ -1199,18 +1212,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean ponto() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Delimitador_instrucoes_ponto":
                     this.tokens.remove(0);
@@ -1221,18 +1234,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean doisPontos() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Delimitador_dois_pontos":
                     this.tokens.remove(0);
@@ -1243,18 +1256,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean SepAbreParentese() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Separador_Abre_Parenteses":
                     this.tokens.remove(0);
@@ -1265,18 +1278,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean SepAbreColchete() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Separador_Abre_Colchetes":
                     this.tokens.remove(0);
@@ -1287,18 +1300,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean SepFechaColchete() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Separador_Fecha_Colchetes":
                     this.tokens.remove(0);
@@ -1309,18 +1322,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean SepFechaParentese() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Separador_Fecha_Parenteses":
                     this.tokens.remove(0);
@@ -1331,18 +1344,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean SepVirgula() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "separador_virgula":
                     this.tokens.remove(0);
@@ -1353,18 +1366,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean EspVar() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Especificador_VAR":
                     this.tokens.remove(0);
@@ -1375,18 +1388,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean EspConst() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Especificador_CONST":
                     this.tokens.remove(0);
@@ -1397,18 +1410,18 @@ public class AnalisadorSintatico {
                     listaNos.remove(listaNos.size() - 1);
                     break;
             }
-
+            
         }
-
+        
         return talvez;
     }
-
+    
     private boolean opAtribuicaoConst() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_comparacao_igual":
                     this.tokens.remove(0);
@@ -1420,16 +1433,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean opAtribuicao() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_atribuicao":
                     this.tokens.remove(0);
@@ -1441,16 +1454,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean opExpressaoBinaria() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "operador_aritmetico_soma":
                 case "operador_aritmetico_subtracao":
@@ -1508,16 +1521,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean begin() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Delimitador_bloco_BEGIN":
                     this.tokens.remove(0);
@@ -1530,16 +1543,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean end() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Delimitador_bloco_END":
                     this.tokens.remove(0);
@@ -1556,16 +1569,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insIf() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_IF":
                     this.tokens.remove(0);
@@ -1580,16 +1593,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insThen() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_THEN":
                     this.tokens.remove(0);
@@ -1604,16 +1617,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insWhile() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_while":
                     this.tokens.remove(0);
@@ -1628,16 +1641,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insUntil() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_until":
                     this.tokens.remove(0);
@@ -1652,16 +1665,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insRepeat() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_repeat":
                     this.tokens.remove(0);
@@ -1676,16 +1689,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insProcedure() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_procedure":
                     this.tokens.remove(0);
@@ -1700,16 +1713,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insFunction() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_function":
                     this.tokens.remove(0);
@@ -1724,16 +1737,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insElse() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_ELSE":
                     this.tokens.remove(0);
@@ -1748,16 +1761,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insDo() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_do":
                     this.tokens.remove(0);
@@ -1772,16 +1785,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insContinue() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_CONTINUE":
                     this.tokens.remove(0);
@@ -1796,16 +1809,16 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private boolean insBreak() throws Exception {
         boolean talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             analisado = this.tokens.get(0);
-
+            
             switch (analisado.getCategoria()) {
                 case "Instrucao_BREAK":
                     this.tokens.remove(0);
@@ -1820,10 +1833,10 @@ public class AnalisadorSintatico {
                     break;
             }
         }
-
+        
         return talvez;
     }
-
+    
     private void msgErro(String simboloEsperado) {
         if (analisado != null && !analisado.getCategoria().equals("error")) {
             this.handlerErro.addErro(analisado,
@@ -1832,14 +1845,14 @@ public class AnalisadorSintatico {
             this.handlerErro.addErro(null, "Erro sintático: Esperado " + simboloEsperado);
         }
     }
-
+    
     private void parametrosIF() throws Exception {
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesIF>");
-
+            
             if (SepAbreParentese()) {
                 parametrosIF();
-
+                
                 if (!SepFechaParentese()) {
                     this.msgErro("<)>");
                 }
@@ -1853,11 +1866,11 @@ public class AnalisadorSintatico {
             listaNos.remove(listaNos.size() - 1);
         }
     }
-
+    
     private void continuaInstrucaoIF() throws Exception {
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesIF>");
-
+            
             if (!programa()) {
                 if (!instrucoes()) {
                     if (bloco()) {
@@ -1871,27 +1884,27 @@ public class AnalisadorSintatico {
             } else {
                 continuaBlocoInstrucaoIF();
             }
-
+            
             listaNos.remove(listaNos.size() - 1);
         }
     }
-
+    
     private void continuaBlocoInstrucaoIF() throws Exception {
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesIF>");
-
+            
             if (insElse()) {
                 continuaInstrucaoElse();
             }
-
+            
             listaNos.remove(listaNos.size() - 1);
         }
     }
-
+    
     private void continuaInstrucaoElse() throws Exception {
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<instrucoesELSE>");
-
+            
             if (!instrucoes()) {
                 if (!programa()) {
                     if (!bloco()) {
@@ -1899,17 +1912,17 @@ public class AnalisadorSintatico {
                     }
                 }
             }
-
+            
             listaNos.remove(listaNos.size() - 1);
         }
     }
-
+    
     private boolean operando() throws Exception {
         var talvez = false;
-
+        
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<primary>");
-
+            
             if (idNum()) {
                 talvez = true;
             } else if (idLiteral()) {
@@ -1922,14 +1935,14 @@ public class AnalisadorSintatico {
             }
             listaNos.remove(listaNos.size() - 1);
         }
-
+        
         return talvez;
     }
-
+    
     private void continuaOperandoId() throws Exception {
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<primaryID>");
-
+            
             if (SepAbreColchete()) {
                 if (idNum()) {
                     if (!SepFechaColchete()) {
@@ -1940,7 +1953,7 @@ public class AnalisadorSintatico {
                 }
             } else if (SepAbreParentese()) {
                 listaDeExpressao();
-
+                
                 if (!SepFechaParentese()) {
                     this.msgErro("<)>");
                 }
@@ -1948,43 +1961,43 @@ public class AnalisadorSintatico {
             listaNos.remove(listaNos.size() - 1);
         }
     }
-
+    
     private boolean listaDeExpressao() throws Exception {
         boolean talvez = false;
-
+        
         inserirNo(listaNos.get(listaNos.size() - 1), "<exprList>");
-
+        
         if (SepAbreParentese()) {
             listaDeExpressao();
             talvez = true;
-
+            
             if (!SepFechaParentese()) {
                 this.msgErro("<)>");
             }
         } else if (operando()) {
             opExpressaoBinaria();
             continuaListaDeExpressao();
-
+            
             talvez = true;
         }
-
+        
         listaNos.remove(listaNos.size() - 1);
-
+        
         return talvez;
     }
-
+    
     private void continuaListaDeExpressao() throws Exception {
         if (!this.tokens.isEmpty()) {
             inserirNo(listaNos.get(listaNos.size() - 1), "<exprListTail>");
-
+            
             if (SepVirgula()) {
                 if (!listaDeExpressao()) {
                     this.msgErro("<exprUnary>, <primary>");
                 }
             }
-
+            
             listaNos.remove(listaNos.size() - 1);
         }
     }
-
+    
 }
