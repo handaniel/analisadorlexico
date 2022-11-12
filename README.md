@@ -1,7 +1,7 @@
 ### Trabalho 1 de Compiladores 2021/2
 #### Um Compilador para um dialeto de linguagem Pascal
 
-Linguagem Pasceiton   
+Linguagem Pasceiton - Homenagem ao nosso amigo Ceiton Gaioti   
 
 Integrantes:   
 Cleiton Schwambach Gaioti   
