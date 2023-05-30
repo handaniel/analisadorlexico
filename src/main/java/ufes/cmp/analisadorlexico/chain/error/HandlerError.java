@@ -18,5 +18,5 @@ public class HandlerError extends AbstractHandler {
     public String recuperarErro(Token token) {
         return "Este token é inválido";
     }
-    
+
 }

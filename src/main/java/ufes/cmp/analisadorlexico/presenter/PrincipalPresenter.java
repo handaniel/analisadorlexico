@@ -1,16 +1,18 @@
 package ufes.cmp.analisadorlexico.presenter;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.Color;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
+
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+
 import ufes.cmp.analisadorlexico.chain.AbstractHandler;
 import ufes.cmp.analisadorlexico.chain.lexico.delimitadoresbloco.HandlerBegin;
 import ufes.cmp.analisadorlexico.model.ErrorCompilacao;
@@ -22,13 +24,12 @@ import ufes.cmp.analisadorlexico.view.PrincipalView;
 
 public class PrincipalPresenter {
 
-    private PrincipalView view;
+    private final PrincipalView view;
     private DefaultTableModel tmAnaliseLex;
     private DefaultTableModel tmSaidas;
     private ArrayList<Token> tokens;
     private KeyListener keyListener;
     private Erros erros;
-    private ArrayList<LinhaCodigo> linhas;
     private boolean listenerAlteracoes = false;
     private Timer timer;
 
@@ -41,11 +42,11 @@ public class PrincipalPresenter {
 
         this.setTableModels();
 
-        this.view.getBtnCompilar().addActionListener((ActionEvent ae) -> {
+        this.view.getBtnCompilar().addActionListener((final ActionEvent ae) -> {
             compilar(this.view.getTxtCodigo().getText().toLowerCase());
         });
 
-        this.view.getCkbExecucaoTempoReal().addActionListener((ActionEvent ae) -> {
+        this.view.getCkbExecucaoTempoReal().addActionListener((final ActionEvent ae) -> {
 
             if (view.getCkbExecucaoTempoReal().isSelected()) {
                 compilarEmTempoReal();
@@ -58,7 +59,7 @@ public class PrincipalPresenter {
         this.view.getTblSaidas().getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
                     @Override
-                    public void valueChanged(ListSelectionEvent e) {
+                    public void valueChanged(final ListSelectionEvent e) {
                         if (view.getTblSaidas().getSelectedRow() >= 0) {
                             ErroSelecionado(view.getTblSaidas().getSelectedRow());
                         } else {
@@ -69,21 +70,20 @@ public class PrincipalPresenter {
 
     }
 
-    private void compilar(String codigo) {
-        this.linhas = new ArrayList<>();
+    private void compilar(final String codigo) {
         this.tokens = new ArrayList<>();
         int posicaoLinha = 1;
         int idToken = 1;
 
-        String codigoPreProcessado = preProcessamento(codigo);
+        final String codigoPreProcessado = preProcessamento(codigo);
 
         String palavra = "";
-        for (String linha : codigoPreProcessado.split("\n")) {
-            LinhaCodigo novaLinha = new LinhaCodigo(linha, posicaoLinha++);
+        for (final String linha : codigoPreProcessado.split("\n")) {
+            final LinhaCodigo novaLinha = new LinhaCodigo(linha, posicaoLinha++);
 
             for (int pos = 0; pos < novaLinha.getConteudo().length(); pos++) {
                 if (novaLinha.getConteudo().charAt(pos) != ' ') {
-                    int fimToken = novaLinha.getConteudo().indexOf(" ", pos);
+                    final int fimToken = novaLinha.getConteudo().indexOf(" ", pos);
 
                     if (fimToken > -1) {
                         palavra = novaLinha.getConteudo().substring(pos, fimToken);
@@ -91,7 +91,7 @@ public class PrincipalPresenter {
                         palavra = novaLinha.getConteudo().substring(pos);
                     }
 
-                    Token novo = new Token(idToken++, palavra, "indefinido", pos, (fimToken - 1), novaLinha);
+                    final Token novo = new Token(idToken++, palavra, "indefinido", pos, (fimToken - 1), novaLinha);
 
                     tokens.add(novo);
 
@@ -112,7 +112,7 @@ public class PrincipalPresenter {
     private void compilarEmTempoReal() {
         keyListener = new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyReleased(final KeyEvent e) {
                 listenerAlteracoes = true;
                 actionListenerKeyReleasedTextArea();
             }
@@ -130,9 +130,9 @@ public class PrincipalPresenter {
                 timer = null;
             }
 
-            ActionListener action = new ActionListener() {
+            final ActionListener action = new ActionListener() {
                 @Override
-                public void actionPerformed(@SuppressWarnings("unused") java.awt.event.ActionEvent e) {
+                public void actionPerformed(@SuppressWarnings("unused") final java.awt.event.ActionEvent e) {
                     if (listenerAlteracoes) {
                         listenerAlteracoes = false;
                         compilar(view.getTxtCodigo().getText());
@@ -168,7 +168,7 @@ public class PrincipalPresenter {
         codigo = codigo.replaceAll("\\:", " : ");
 
         codigo = codigo.replaceAll("\\=", " \\= ");
-        
+
         codigo = codigo.replaceAll("end\\.", "end \\. ");
 
         codigo = codigo.replaceAll("\\<", " \\< ");
@@ -213,11 +213,11 @@ public class PrincipalPresenter {
         view.getTblSaidas().setModel(tmSaidas);
     }
 
-    private ArrayList<Token> chainAnaliseLexica(ArrayList<Token> tokens) {
+    private ArrayList<Token> chainAnaliseLexica(final ArrayList<Token> tokens) {
 
-        for (Token token : tokens) {
+        for (final Token token : tokens) {
 
-            AbstractHandler handler = new HandlerBegin(token);
+            final AbstractHandler handler = new HandlerBegin(token);
 
             if (token.getCategoria().toLowerCase().equals("error")
                     || token.getCategoria().toLowerCase().equals("indefinido")) {
@@ -229,11 +229,11 @@ public class PrincipalPresenter {
         return tokens;
     }
 
-    private void preencherTabelaAnaliseLexica(ArrayList<Token> tokens) {
+    private void preencherTabelaAnaliseLexica(final ArrayList<Token> tokens) {
         tmAnaliseLex.setNumRows(0);
         this.view.getTblAnaliseLexica().setModel(tmAnaliseLex);
 
-        for (Token t : tokens) {
+        for (final Token t : tokens) {
             tmAnaliseLex.addRow(new Object[] {
                     t.getId(),
                     t.getLinha().getPosicao(),
@@ -246,13 +246,13 @@ public class PrincipalPresenter {
 
     }
 
-    private void preencherTabelaErros(ArrayList<Token> tokens) {
+    private void preencherTabelaErros(final ArrayList<Token> tokens) {
 
         tmSaidas.setNumRows(0);
         this.view.getTblSaidas().setModel(tmSaidas);
 
         if (!this.erros.getListErro().isEmpty()) {
-            for (ErrorCompilacao erro : this.erros.getListErro()) {
+            for (final ErrorCompilacao erro : this.erros.getListErro()) {
                 tmSaidas.addRow(new Object[] {
                         erro.getMensagemErro(),
                         erro.getToken().getLinha().getPosicao(),
@@ -266,11 +266,11 @@ public class PrincipalPresenter {
         }
     }
 
-    private void ErroSelecionado(int linha) {
-        int idToken = (int) this.view.getTblSaidas().getValueAt(linha, 3);
+    private void ErroSelecionado(final int linha) {
+        final int idToken = (int) this.view.getTblSaidas().getValueAt(linha, 3);
 
         Token erroSelecionado = null;
-        for (Token token : tokens) {
+        for (final Token token : tokens) {
             if (token.getId() == idToken) {
                 erroSelecionado = token;
                 break;
